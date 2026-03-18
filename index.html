@@ -161,7 +161,6 @@
     #lighterStartBtn { display: none; margin-left: 8px; }
     #laserOnBtn, #laserOffBtn { display: none; }
 
-    /* Snake panel */
     #snakeCanvas {
       background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 60%, #000000 100%);
     }
@@ -176,11 +175,9 @@
       margin-left: 8px;
     }
 
-    /* Views */
     .view { display: none; }
     .view.active { display: block; }
 
-    /* Menu */
     #viewMenu .menu-buttons {
       display: flex;
       flex-direction: column;
@@ -222,7 +219,6 @@
       </div>
     </header>
     <main>
-      <!-- MENU VIEW -->
       <section id="viewMenu" class="view active">
         <div class="game-panel">
           <h3>Welcome to Pablo's Portal</h3>
@@ -237,14 +233,13 @@
         </div>
       </section>
 
-      <!-- SANDBOX VIEW -->
       <section id="viewSandbox" class="view">
         <h2>Physics Sandbox</h2>
         <p>
           Draw solids, liquids, and gases. Spawn a tiny player that can walk and jump. Use the lighter to try to
           ignite a flame – it only starts 1 in 5 times. If it lights near propane or explosive gas, everything blows up
           with a pixel-burst explosion and chain reactions. Use the laser pointer to slice through solids (except mirrors),
-          and bounce the beam off mirror blocks.
+          and bounce the beam off mirror blocks. Rotate the laser with Q and E for full 360° control.
         </p>
         <div style="margin-top:16px;">
           <div class="game-panel">
@@ -318,7 +313,6 @@
         </div>
       </section>
 
-      <!-- SNAKE VIEW -->
       <section id="viewSnake" class="view">
         <h2>Neon Snake</h2>
         <p>
@@ -346,9 +340,6 @@
 
   <script>
     (function () {
-      /* =========
-         VIEW NAV
-         ========= */
       const viewMenu = document.getElementById("viewMenu");
       const viewSandbox = document.getElementById("viewSandbox");
       const viewSnake = document.getElementById("viewSnake");
@@ -370,9 +361,6 @@
       document.getElementById("sandboxBackToMenu").addEventListener("click", () => showView("menu"));
       document.getElementById("snakeBackToMenu").addEventListener("click", () => showView("menu"));
 
-      /* =========================
-         SANDBOX + PLAYER + LIGHTER + LASER
-         ========================= */
       const canvas = document.getElementById("sandboxCanvas");
       const ctx = canvas.getContext("2d");
 
@@ -415,7 +403,6 @@
       const laserOnBtn = document.getElementById("laserOnBtn");
       const laserOffBtn = document.getElementById("laserOffBtn");
 
-      // Player
       let player = null;
       let keys = {};
       const GRAVITY = 0.35;
@@ -433,7 +420,6 @@
         DEAD: "dead",
       };
 
-      // Lighter
       let lighterPos = { x: cols / 2, y: rows - 5 };
       let lighterLit = false;
       let lighterSpark = false;
@@ -441,8 +427,9 @@
 
       // Laser pointer
       let laserOn = false;
+      let laserAngle = 0;          // degrees
+      const LASER_ROT_SPEED = 3;   // degrees per key press
 
-      // Explosion animation (pixel burst)
       const explosions = [];
 
       function createGrid() {
@@ -598,7 +585,6 @@
         }
 
         if (mode === "laser") {
-          // laser is handled in update/render, nothing to paint
           return;
         }
 
@@ -721,7 +707,7 @@
         lighterSpark = false;
         lighterLit = false;
         lighterTimer = 0.2;
-        const roll = Math.floor(Math.random() * 5); // 0..4
+        const roll = Math.floor(Math.random() * 5);
         if (roll === 0) {
           lighterLit = true;
         } else {
@@ -1240,9 +1226,27 @@
         respawnPlayer();
       });
 
+      function angleToDir(angleDeg) {
+        const rad = angleDeg * Math.PI / 180;
+        return { dx: Math.cos(rad), dy: Math.sin(rad) };
+      }
+
       window.addEventListener("keydown", (e) => {
-        keys[e.key.toLowerCase()] = true;
+        const k = e.key.toLowerCase();
+        keys[k] = true;
+
+        if (mode === "laser") {
+          if (k === "q") {
+            laserAngle -= LASER_ROT_SPEED;
+            if (laserAngle < 0) laserAngle += 360;
+          }
+          if (k === "e") {
+            laserAngle += LASER_ROT_SPEED;
+            if (laserAngle >= 360) laserAngle -= 360;
+          }
+        }
       });
+
       window.addEventListener("keyup", (e) => {
         keys[e.key.toLowerCase()] = false;
       });
@@ -1527,41 +1531,43 @@
       }
 
       function applyLaserDestruction() {
-        if (hoverX < 0 || hoverX >= cols || hoverY < 0 || hoverY >= rows) return;
+        if (!laserOn || mode !== "laser") return;
+        if (hoverX < 0 || hoverY < 0 || hoverX >= cols || hoverY >= rows) return;
 
-        let x = hoverX;
-        let y = hoverY;
-        let dx = 1;
-        let dy = 0;
+        let { dx, dy } = angleToDir(laserAngle);
+        let x = hoverX + 0.5;
+        let y = hoverY + 0.5;
+
+        const maxSteps = 800;
+        const maxBounces = 12;
         let bounces = 0;
-        const maxBounces = 8;
-        const maxSteps = 600;
 
-        for (let step = 0; step < maxSteps; step++) {
-          x += dx;
-          y += dy;
-          if (!inBounds(x, y)) break;
-          const cell = grid[y][x];
+        for (let i = 0; i < maxSteps; i++) {
+          x += dx * 0.2;
+          y += dy * 0.2;
+
+          const cx = Math.floor(x);
+          const cy = Math.floor(y);
+
+          if (!inBounds(cx, cy)) break;
+
+          const cell = grid[cy][cx];
           if (!cell) continue;
 
           if (cell.state === SOLID) {
             if (isMirror(cell)) {
               if (bounces >= maxBounces) break;
               bounces++;
-              if (dx !== 0 && dy === 0) {
-                dx = 0;
-                dy = -1;
-              } else if (dy !== 0 && dx === 0) {
-                dx = 1;
-                dy = 0;
-              } else {
-                const tmp = dx;
-                dx = dy;
-                dy = tmp;
-              }
+
+              const normal = 45 * (Math.PI / 180);
+              const incoming = Math.atan2(dy, dx);
+              const reflected = 2 * normal - incoming;
+
+              dx = Math.cos(reflected);
+              dy = Math.sin(reflected);
               continue;
             } else {
-              grid[y][x] = null;
+              grid[cy][cx] = null;
               break;
             }
           }
@@ -1570,60 +1576,53 @@
 
       function renderLaser() {
         if (!laserOn || mode !== "laser") return;
-        if (hoverX < 0 || hoverX >= cols || hoverY < 0 || hoverY >= rows) return;
+        if (hoverX < 0 || hoverY < 0 || hoverX >= cols || hoverY >= rows) return;
 
-        let x = hoverX;
-        let y = hoverY;
-        let dx = 1;
-        let dy = 0;
+        let { dx, dy } = angleToDir(laserAngle);
+        let x = hoverX + 0.5;
+        let y = hoverY + 0.5;
+
+        const maxSteps = 800;
+        const maxBounces = 12;
         let bounces = 0;
-        const maxBounces = 8;
-        const maxSteps = 600;
 
         const segments = [];
-        let startX = x + 0.5;
-        let startY = y + 0.5;
+        let startX = x;
+        let startY = y;
 
-        for (let step = 0; step < maxSteps; step++) {
-          x += dx;
-          y += dy;
-          if (!inBounds(x, y)) {
-            segments.push({
-              x1: startX, y1: startY,
-              x2: x - dx + 0.5, y2: y - dy + 0.5
-            });
+        for (let i = 0; i < maxSteps; i++) {
+          x += dx * 0.2;
+          y += dy * 0.2;
+
+          const cx = Math.floor(x);
+          const cy = Math.floor(y);
+
+          if (!inBounds(cx, cy)) {
+            segments.push({ x1: startX, y1: startY, x2: x, y2: y });
             break;
           }
-          const cell = grid[y][x];
+
+          const cell = grid[cy][cx];
           if (!cell) continue;
 
           if (cell.state === SOLID) {
+            segments.push({ x1: startX, y1: startY, x2: x, y2: y });
+
             if (isMirror(cell)) {
-              segments.push({
-                x1: startX, y1: startY,
-                x2: x + 0.5, y2: y + 0.5
-              });
               if (bounces >= maxBounces) break;
               bounces++;
-              if (dx !== 0 && dy === 0) {
-                dx = 0;
-                dy = -1;
-              } else if (dy !== 0 && dx === 0) {
-                dx = 1;
-                dy = 0;
-              } else {
-                const tmp = dx;
-                dx = dy;
-                dy = tmp;
-              }
-              startX = x + 0.5;
-              startY = y + 0.5;
+
+              const normal = 45 * (Math.PI / 180);
+              const incoming = Math.atan2(dy, dx);
+              const reflected = 2 * normal - incoming;
+
+              dx = Math.cos(reflected);
+              dy = Math.sin(reflected);
+
+              startX = x;
+              startY = y;
               continue;
             } else {
-              segments.push({
-                x1: startX, y1: startY,
-                x2: x + 0.5, y2: y + 0.5
-              });
               break;
             }
           }
@@ -1633,35 +1632,39 @@
         ctx.lineWidth = 2;
         ctx.shadowBlur = 12;
         ctx.shadowColor = "rgba(248,250,252,0.9)";
+
         const t = performance.now() / 200;
         const r = Math.floor(200 + 55 * Math.sin(t));
         const g = Math.floor(200 + 55 * Math.sin(t + 2));
         const b = Math.floor(200 + 55 * Math.sin(t + 4));
         ctx.strokeStyle = `rgba(${r},${g},${b},0.95)`;
 
-        segments.forEach(seg => {
+        for (const seg of segments) {
           ctx.beginPath();
           ctx.moveTo(seg.x1 * cellSizeX, seg.y1 * cellSizeY);
           ctx.lineTo(seg.x2 * cellSizeX, seg.y2 * cellSizeY);
           ctx.stroke();
-        });
+        }
 
-        ctx.shadowBlur = 0;
         ctx.restore();
 
-        // draw laser pointer head at hover cell
         const px = (hoverX + 0.5) * cellSizeX;
         const py = (hoverY + 0.5) * cellSizeY;
+
         ctx.save();
         ctx.translate(px, py);
+        ctx.rotate(laserAngle * Math.PI / 180);
+
         ctx.fillStyle = "#111827";
         ctx.beginPath();
         ctx.arc(0, 0, 4, 0, Math.PI * 2);
         ctx.fill();
+
         ctx.fillStyle = `rgba(${r},${g},${b},1)`;
         ctx.beginPath();
-        ctx.arc(0, 0, 2, 0, Math.PI * 2);
+        ctx.arc(4, 0, 2, 0, Math.PI * 2);
         ctx.fill();
+
         ctx.restore();
       }
 
@@ -1753,9 +1756,6 @@
 
       requestAnimationFrame(sandboxLoop);
 
-      /* ==========
-         NEON SNAKE
-         ========== */
       const snakeCanvas = document.getElementById("snakeCanvas");
       const sctx = snakeCanvas.getContext("2d");
       const snakeStartBtn = document.getElementById("snakeStartBtn");
