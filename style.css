@@ -1,380 +1,242 @@
-/* ---------------------------------------------------------
-   GLOBAL RESET + BASE
---------------------------------------------------------- */
+/* ============================================================
+   PABLO'S PORTAL — NEON CYBER‑GLASS UI
+   Floating Panels (B1 Layout)
+   Strong RGB Gamer Glow (Fast Cycle)
+   ============================================================ */
+
+/* ---------- GLOBAL RESET ---------- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   user-select: none;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  background: #000;
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  color: #fff;
-  overflow: hidden;
-}
-
-/* Smooth animations everywhere */
-:root {
-  --rgb1: #ff004c;
-  --rgb2: #00eaff;
-  --rgb3: #8b00ff;
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --blur: 20px;
-}
-
-/* RGB cycle animation */
-@keyframes rgb-cycle {
-  0%   { color: var(--rgb1); border-color: var(--rgb1); }
-  33%  { color: var(--rgb2); border-color: var(--rgb2); }
-  66%  { color: var(--rgb3); border-color: var(--rgb3); }
-  100% { color: var(--rgb1); border-color: var(--rgb1); }
-}
-
-@keyframes rgb-glow {
-  0%   { box-shadow: 0 0 10px var(--rgb1); }
-  33%  { box-shadow: 0 0 10px var(--rgb2); }
-  66%  { box-shadow: 0 0 10px var(--rgb3); }
-  100% { box-shadow: 0 0 10px var(--rgb1); }
-}
-
-/* ---------------------------------------------------------
-   ARCADE FRAME (RGB BORDER AROUND SCREEN)
---------------------------------------------------------- */
-.arcade-frame .arcade-border {
-  position: fixed;
-  z-index: 999;
-  background: transparent;
-  animation: rgb-cycle 4s linear infinite;
-}
-
-.arcade-border.top,
-.arcade-border.bottom {
-  left: 0;
-  width: 100%;
-  height: 4px;
-}
-
-.arcade-border.left,
-.arcade-border.right {
-  top: 0;
-  height: 100%;
-  width: 4px;
-}
-
-.arcade-border.top    { top: 0; }
-.arcade-border.bottom { bottom: 0; }
-.arcade-border.left   { left: 0; }
-.arcade-border.right  { right: 0; }
-
-/* ---------------------------------------------------------
-   GLASS PANELS
---------------------------------------------------------- */
-.glass-panel {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(var(--blur));
-  border-radius: 12px;
-  padding: 16px;
-  animation: rgb-glow 6s linear infinite;
-}
-
-/* ---------------------------------------------------------
-   LAYOUT
---------------------------------------------------------- */
-.arcade-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
+body {
+  background: radial-gradient(circle at top left, #0a0a0f, #000);
   height: 100vh;
+  overflow: hidden;
+  color: #e2e8f0;
 }
 
-/* ---------------------------------------------------------
-   SIDEBAR
---------------------------------------------------------- */
-.arcade-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
+/* ---------- RGB GLOW ANIMATION ---------- */
+@keyframes rgbGlow {
+  0%   { box-shadow: 0 0 12px #ff004c, 0 0 24px #ff004c; border-color: #ff004c; }
+  33%  { box-shadow: 0 0 12px #00eaff, 0 0 24px #00eaff; border-color: #00eaff; }
+  66%  { box-shadow: 0 0 12px #8b00ff, 0 0 24px #8b00ff; border-color: #8b00ff; }
+  100% { box-shadow: 0 0 12px #ff004c, 0 0 24px #ff004c; border-color: #ff004c; }
 }
 
-.logo-block {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* ---------- GLASS PANEL BASE ---------- */
+.glass {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 14px;
 }
 
-.logo-orb {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  animation: rgb-cycle 3s linear infinite;
+.neon-border {
+  animation: rgbGlow 2.2s linear infinite;
 }
 
-.logo-title {
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-
-.logo-subtitle {
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-.nav-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.nav-label {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  margin-bottom: 4px;
-}
-
-.nav-button {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 10px 12px;
-  border-radius: 8px;
-  text-align: left;
-  cursor: pointer;
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-button:hover {
-  background: rgba(255,255,255,0.12);
-}
-
-.nav-button.active {
-  animation: rgb-cycle 4s linear infinite;
-  border-width: 2px;
-}
-
-.nav-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  animation: rgb-cycle 4s linear infinite;
-}
-
-.sidebar-footer {
-  margin-top: auto;
-  opacity: 0.5;
-  font-size: 0.75rem;
-}
-
-/* ---------------------------------------------------------
-   TOP BAR
---------------------------------------------------------- */
-.arcade-topbar {
+/* ---------- TOP PANEL ---------- */
+.top-panel {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 12px;
-  padding: 12px 20px;
+  padding: 14px 20px;
 }
 
-.topbar-title {
-  font-size: 1.1rem;
-  font-weight: bold;
+.top-panel .title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
-.topbar-pill {
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid;
-  animation: rgb-cycle 4s linear infinite;
+.nav-buttons button {
+  margin-left: 10px;
 }
 
-.topbar-button {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 8px 14px;
-  border-radius: 8px;
+/* ---------- LEFT PANEL (TOOLS) ---------- */
+.left-panel {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 160px;
+  padding: 16px;
+}
+
+.left-panel h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.tool-btn {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.15s;
 }
 
-.topbar-button:hover {
-  background: rgba(255,255,255,0.12);
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* ---------------------------------------------------------
-   VIEW PANELS
---------------------------------------------------------- */
-.arcade-views {
-  height: calc(100vh - 80px);
+.tool-btn.active {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.tool-btn.danger {
+  color: #ff4b4b;
+}
+
+/* ---------- RIGHT PANEL (SETTINGS) ---------- */
+.right-panel {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 200px;
+  padding: 16px;
+}
+
+.right-panel h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.section {
+  margin-bottom: 14px;
+}
+
+.section label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.state-btn {
+  padding: 6px 10px;
+  margin-right: 4px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.state-btn.active {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+select,
+input[type="range"],
+input[type="color"] {
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+}
+
+/* ---------- BOTTOM PANEL ---------- */
+.bottom-panel {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
   padding: 12px;
 }
 
-.view-panel {
-  display: none;
-  height: 100%;
-  flex-direction: column;
-}
-
-.active-view {
-  display: flex;
-}
-
-.view-header {
-  margin-bottom: 12px;
-}
-
-.view-tag {
-  font-size: 0.8rem;
-  animation: rgb-cycle 4s linear infinite;
-}
-
-/* ---------------------------------------------------------
-   SANDBOX LAYOUT
---------------------------------------------------------- */
-.sandbox-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr 220px;
-  gap: 16px;
-  height: 100%;
-}
-
-.sandbox-tools,
-.sandbox-status {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.tools-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.tools-label {
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-.tools-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-}
-
-.tool-button {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 8px;
-  border-radius: 6px;
+.bottom-panel button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.15s;
 }
 
-.tool-button:hover {
-  background: rgba(255,255,255,0.12);
+.bottom-panel button:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.tool-button.wide {
-  width: 100%;
-}
-
-.brush-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.sandbox-canvas-wrap {
-  position: relative;
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-#sandbox-canvas {
-  width: 100%;
-  height: 100%;
-  background: #000;
-}
-
-.overlay-layer {
+/* ---------- CENTER CANVAS AREA ---------- */
+.center-area {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* ---------------------------------------------------------
-   STATUS PANEL
---------------------------------------------------------- */
-.status-block {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.12);
-  padding: 10px;
-  border-radius: 8px;
+canvas {
+  display: none;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  animation: rgbGlow 2.2s linear infinite;
 }
 
-.status-label {
-  font-size: 0.8rem;
-  opacity: 0.7;
-  margin-bottom: 6px;
+/* ---------- MENU SCREEN ---------- */
+.menu-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  text-align: center;
+  padding: 30px;
 }
 
-.status-line {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
+.menu-screen h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
 }
 
-.debug-log {
-  height: 120px;
-  overflow-y: auto;
-  font-size: 0.75rem;
-  background: rgba(0,0,0,0.4);
-  padding: 6px;
-  border-radius: 6px;
+.menu-screen p {
+  opacity: 0.8;
+  margin-bottom: 20px;
 }
 
-/* ---------------------------------------------------------
-   SNAKE VIEW
---------------------------------------------------------- */
-.snake-layout {
-  display: grid;
-  grid-template-columns: 1fr 240px;
-  gap: 16px;
-  height: 100%;
-}
-
-#snake-canvas {
+.menu-screen button {
   width: 100%;
-  height: 100%;
-  background: #000;
-}
-
-.snake-panel {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.12);
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px;
   margin-bottom: 12px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: 0.15s;
 }
 
-.snake-score {
-  font-size: 1.4rem;
-  font-weight: bold;
-  animation: rgb-cycle 4s linear infinite;
+.menu-screen button:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
-/* ---------------------------------------------------------
-   RGB TEXT
---------------------------------------------------------- */
-.rgb-text {
-  animation: rgb-cycle 4s linear infinite;
+/* ---------- ACTIVE CANVAS ---------- */
+#sandboxCanvas.active,
+#snakeCanvas.active {
+  display: block;
 }
