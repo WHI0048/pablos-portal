@@ -1,115 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pablo's Portal</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<title>Pablo's Portal</title>
+<style>
+/* --------------------------------------------------
+   GLOBAL LAYOUT + BACKGROUND
+-------------------------------------------------- */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, pink, #7bb7ff, #ffe066);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Center container for all views */
+#app {
+  width: 90%;
+  height: 90%;
+  background: white;
+  border: 2px solid #ccc;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------
+   SHARED UI ELEMENTS
+-------------------------------------------------- */
+.panel {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 0;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  background: #ffffff;
+  border: 1px solid #aaa;
+  border-radius: 999px; /* pill shape */
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #f0f0f0;
+}
+
+.hidden {
+  display: none;
+}
+
+/* --------------------------------------------------
+   MENU VIEW
+-------------------------------------------------- */
+#menuView {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#menuPanel {
+  width: 300px;
+  text-align: center;
+}
+
+#menuPanel h1 {
+  margin-bottom: 20px;
+}
+
+/* --------------------------------------------------
+   SANDBOX VIEW
+-------------------------------------------------- */
+#sandboxView {
+  flex: 1;
+  display: none;
+  flex-direction: row;
+  gap: 10px;
+  padding: 10px;
+}
+
+#sandboxLeft, #sandboxRight {
+  width: 200px;
+  overflow-y: auto;
+}
+
+#sandboxCenter {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+  border: 1px solid #444;
+  image-rendering: pixelated;
+}
+
+/* --------------------------------------------------
+   SNAKE VIEW
+-------------------------------------------------- */
+#snakeView {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#snakeCanvas {
+  border: 1px solid #444;
+  background: #000;
+}
+
+</style>
 </head>
 <body>
 
-  <!-- TOP NAV PANEL -->
-  <div class="top-panel glass neon-border">
-    <div class="title">Pablo's Portal</div>
-    <div class="nav-buttons">
-      <button id="navMenuBtn">Menu</button>
-      <button id="navSandboxBtn">Sandbox</button>
-      <button id="navSnakeBtn">Snake</button>
+<div id="app">
+
+  <!-- --------------------------------------------------
+       MENU VIEW
+  -------------------------------------------------- -->
+  <div id="menuView">
+    <div id="menuPanel" class="panel">
+      <h1>Pablo's Portal</h1>
+      <button onclick="showSandbox()">Sandbox</button><br><br>
+      <button onclick="showSnake()">Snake</button><br><br>
+      <button onclick="showCredits()">Credits</button>
     </div>
   </div>
 
-  <!-- LEFT TOOL PANEL -->
-  <div class="left-panel glass neon-border">
-    <h3>Tools</h3>
-    <button class="tool-btn" data-mode="draw">Draw</button>
-    <button class="tool-btn" id="rulerBtn">Ruler</button>
-    <button class="tool-btn" data-mode="select">Select</button>
-    <button class="tool-btn" data-mode="erase">Erase</button>
-    <button class="tool-btn" data-mode="fire">Fire</button>
-    <button class="tool-btn" data-mode="electric">Electric</button>
-    <button class="tool-btn" data-mode="lighter">Lighter</button>
-    <button class="tool-btn" data-mode="laser">Laser</button>
-    <button class="tool-btn" data-mode="player">Player</button>
-    <button class="tool-btn danger" id="sandboxClear">Clear</button>
-  </div>
+  <!-- --------------------------------------------------
+       SANDBOX VIEW
+  -------------------------------------------------- -->
+  <div id="sandboxView">
 
-  <!-- RIGHT SETTINGS PANEL -->
-  <div class="right-panel glass neon-border">
-    <h3>Materials</h3>
-
-    <div class="section">
-      <label>State:</label>
-      <button class="state-btn" data-state="solid">Solid</button>
-      <button class="state-btn" data-state="liquid">Liquid</button>
-      <button class="state-btn" data-state="gas">Gas</button>
-    </div>
-
-    <div class="section">
-      <label>Solid Type:</label>
-      <select id="solidType">
-        <option value="stone">Stone</option>
+    <!-- LEFT PANEL -->
+    <div id="sandboxLeft" class="panel">
+      <h3>Tools</h3>
+      <select id="toolSelect">
         <option value="sand">Sand</option>
-        <option value="metal">Metal</option>
-        <option value="wood">Wood</option>
-        <option value="mirror">Mirror</option>
-      </select>
-    </div>
-
-    <div class="section">
-      <label>Liquid Type:</label>
-      <select id="liquidType">
         <option value="water">Water</option>
-        <option value="gasoline">Gasoline</option>
+        <option value="stone">Stone</option>
+        <option value="fire">Fire</option>
+        <option value="plant">Plant</option>
         <option value="acid">Acid</option>
-        <option value="poison">Poison</option>
-        <option value="lava">Lava</option>
+        <option value="wall">Wall</option>
+        <option value="erase">Erase</option>
       </select>
-    </div>
 
-    <div class="section">
-      <label>Gas Type:</label>
-      <select id="gasType">
-        <option value="poison">Poison</option>
-        <option value="propane">Propane</option>
-        <option value="explosive">Explosive</option>
-        <option value="smoke">Smoke</option>
-        <option value="steam">Steam</option>
+      <h3>Brush Size</h3>
+      <select id="brushSize">
+        <option value="1">1</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
       </select>
+
+      <br><br>
+      <button onclick="togglePause()" id="pauseBtn">Pause</button><br><br>
+      <button onclick="clearGrid()">Clear</button><br><br>
+      <button onclick="returnToMenu()">Back</button>
     </div>
 
-    <div class="section">
-      <label>Brush Size:</label>
-      <input type="range" id="sandboxSize" min="1" max="10" value="3" />
+    <!-- CENTER CANVAS -->
+    <div id="sandboxCenter">
+      <canvas id="world" width="240" height="160"></canvas>
     </div>
 
-    <div class="section">
-      <label>Color Override:</label>
-      <input type="color" id="sandboxColor" value="#38bdf8" />
+    <!-- RIGHT PANEL -->
+    <div id="sandboxRight" class="panel">
+      <h3>Simulation</h3>
+      Gravity<br>
+      <input type="range" id="gravitySlider" min="0" max="2" step="0.1" value="1"><br><br>
+
+      Wind<br>
+      <input type="range" id="windSlider" min="-1" max="1" step="0.1" value="0"><br><br>
     </div>
+
   </div>
 
-  <!-- BOTTOM PANEL -->
-  <div class="bottom-panel glass neon-border">
-    <button id="respawnBtn">Respawn Player</button>
-    <button id="lighterStartBtn">Start Lighter</button>
-    <button id="laserOnBtn">Laser On</button>
-    <button id="laserOffBtn">Laser Off</button>
-    <button id="backToMenuBtn">Back to Menu</button>
+  <!-- --------------------------------------------------
+       SNAKE VIEW
+  -------------------------------------------------- -->
+  <div id="snakeView">
+    <h2>Neon Snake (Simple Version)</h2>
+    <canvas id="snakeCanvas" width="300" height="300"></canvas>
+    <br>
+    <button onclick="startSnake()">Start</button>
+    <button onclick="returnToMenu()">Back</button>
   </div>
 
-  <!-- MAIN CANVAS AREA -->
-  <div class="center-area">
-    <canvas id="sandboxCanvas" width="800" height="450"></canvas>
-    <canvas id="snakeCanvas" width="800" height="450"></canvas>
+  <!-- --------------------------------------------------
+       CREDITS VIEW
+  -------------------------------------------------- -->
+  <div id="creditsView" class="hidden panel" style="margin: auto;">
+    <h2>Credits</h2>
+    <p>Created by Rebecca.</p>
+    <button onclick="returnToMenu()">Back</button>
   </div>
 
-  <!-- MENU SCREEN -->
-  <div id="menuScreen" class="menu-screen glass neon-border">
-    <h1>Pablo's Portal</h1>
-    <p>Choose your mode</p>
-    <button id="menuToSandboxBtn">Enter Sandbox</button>
-    <button id="menuToSnakeBtn">Play Snake</button>
-  </div>
+</div>
 
-  <script src="script.js"></script>
+<script>
+/* --------------------------------------------------
+   VIEW SWITCHING
+-------------------------------------------------- */
+function hideAll() {
+  document.getElementById("menuView").style.display = "none";
+  document.getElementById("sandboxView").style.display = "none";
+  document.getElementById("snakeView").style.display = "none";
+  document.getElementById("creditsView").style.display = "none";
+}
+
+function showSandbox() {
+  hideAll();
+  document.getElementById("sandboxView").style.display = "flex";
+}
+
+function showSnake() {
+  hideAll();
+  document.getElementById("snakeView").style.display = "flex";
+}
+
+function showCredits() {
+  hideAll();
+  document.getElementById("creditsView").style.display = "block";
+}
+
+function returnToMenu() {
+  hideAll();
+  document.getElementById("menuView").style.display = "flex";
+}
+
+/* --------------------------------------------------
+   SANDBOX LOGIC (FULL PHYSICS)
+-------------------------------------------------- */
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d');
+
+const W = canvas.width;
+const H = canvas.height;
+
+let paused = false;
+
+const EMPTY = 0;
+const SAND = 1;
+const WATER = 2;
+const STONE = 3;
+const FIRE = 4;
+const PLANT = 5;
+const ACID = 6;
+const WALL = 7;
+
+const grid = new Array(W * H).fill(EMPTY);
+const nextGrid = new Array(W * H).fill(EMPTY);
+
+function idx(x, y) { return y * W + x; }
+function inBounds(x, y) { return x >= 0 && x < W && y >= 0 && y < H; }
+function getCell(x, y) { return inBounds(x, y) ? grid[idx(x, y)] : WALL; }
+function setCell(x, y, t) { if (inBounds(x, y)) grid[idx(x, y)] = t; }
+function clearGrid() { grid.fill(EMPTY); }
+
+function togglePause() {
+  paused = !paused;
+  document.getElementById("pauseBtn").textContent = paused ? "Resume" : "Pause";
+}
+
+function update() {
+  const gravity = parseFloat(document.getElementById("gravitySlider").value);
+  const wind = parseFloat(document.getElementById("windSlider").value);
+
+  nextGrid.set(grid);
+
+  for (let y = H - 1; y >= 0; y--) {
+    for (let x = 0; x < W; x++) {
+      const i = idx(x, y);
+      const cell = grid[i];
+
+      if (cell === EMPTY || cell === STONE || cell === WALL) continue;
+
+      if (cell === SAND) {
+        const below = getCell(x, y + 1);
+        if (below === EMPTY || below === WATER) {
+          nextGrid[idx(x, y + 1)] = SAND;
+          nextGrid[i] = below === WATER ? WATER : EMPTY;
+          continue;
+        }
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        if (getCell(x + dir, y + 1) === EMPTY) {
+          nextGrid[idx(x + dir, y + 1)] = SAND;
+          nextGrid[i] = EMPTY;
+          continue;
+        }
+      }
+
+      if (cell === WATER) {
+        const below = getCell(x, y + 1);
+        if (below === EMPTY) {
+          nextGrid[idx(x, y + 1)] = WATER;
+          nextGrid[i] = EMPTY;
+          continue;
+        }
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        if (getCell(x + dir, y) === EMPTY) {
+          nextGrid[idx(x + dir, y)] = WATER;
+          nextGrid[i] = EMPTY;
+          continue;
+        }
+      }
+
+      if (cell === FIRE) {
+        if (Math.random() < 0.05) {
+          nextGrid[i] = EMPTY;
+          continue;
+        }
+        const neighbors = [[1,0],[-1,0],[0,1],[0,-1]];
+        for (const [dx, dy] of neighbors) {
+          if (getCell(x+dx, y+dy) === PLANT)
+            nextGrid[idx(x+dx, y+dy)] = FIRE;
+        }
+      }
+
+      if (cell === PLANT) {
+        if (Math.random() < 0.01) {
+          const dir = Math.random() < 0.5 ? -1 : 1;
+          if (getCell(x+dir, y-1) === EMPTY)
+            nextGrid[idx(x+dir, y-1)] = PLANT;
+        }
+      }
+
+      if (cell === ACID) {
+        const dirs = [[0,1],[1,0],[-1,0],[0,-1]];
+        for (const [dx, dy] of dirs) {
+          const c = getCell(x+dx, y+dy);
+          if (c !== EMPTY && c !== ACID) {
+            nextGrid[idx(x+dx, y+dy)] = EMPTY;
+            if (Math.random() < 0.3) nextGrid[i] = EMPTY;
+          }
+        }
+        if (getCell(x, y+1) === EMPTY) {
+          nextGrid[idx(x, y+1)] = ACID;
+          nextGrid[i] = EMPTY;
+        }
+      }
+    }
+  }
+
+  grid.set(nextGrid);
+}
+
+function draw() {
+  const imageData = ctx.createImageData(W, H);
+  const data = imageData.data;
+
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const i = idx(x, y);
+      const cell = grid[i];
+      const p = i * 4;
+
+      let r=0,g=0,b=0;
+      if (cell === SAND) { r=194; g=178; b=128; }
+      if (cell === WATER) { r=64; g=96; b=255; }
+      if (cell === STONE) { r=120; g=120; b=120; }
+      if (cell === FIRE) { r=255; g=120; b=40; }
+      if (cell === PLANT) { r=40; g=200; b=60; }
+      if (cell === ACID) { r=120; g=255; b=120; }
+      if (cell === WALL) { r=180; g=180; b=180; }
+
+      data[p] = r;
+      data[p+1] = g;
+      data[p+2] = b;
+      data[p+3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+}
+
+let mouseDown = false;
+let rightDown = false;
+
+canvas.addEventListener("mousedown", e => {
+  mouseDown = e.button === 0;
+  rightDown = e.button === 2;
+  paint(e);
+});
+canvas.addEventListener("mouseup", ()=>{ mouseDown=false; rightDown=false; });
+canvas.addEventListener("mouseleave", ()=>{ mouseDown=false; rightDown=false; });
+canvas.addEventListener("contextmenu", e => e.preventDefault());
+canvas.addEventListener("mousemove", e => {
+  if (mouseDown || rightDown) paint(e);
+});
+
+function paint(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX - rect.left) * (W / rect.width));
+  const y = Math.floor((e.clientY - rect.top) * (H / rect.height));
+
+  const size = parseInt(document.getElementById("brushSize").value);
+  const tool = document.getElementById("toolSelect").value;
+
+  for (let dy=-size; dy<=size; dy++) {
+    for (let dx=-size; dx<=size; dx++) {
+      const nx = x+dx, ny = y+dy;
+      if (!inBounds(nx, ny)) continue;
+
+      if (rightDown || tool === "erase") {
+        setCell(nx, ny, EMPTY);
+      } else {
+        const map = {
+          sand:SAND, water:WATER, stone:STONE, fire:FIRE,
+          plant:PLANT, acid:ACID, wall:WALL
+        };
+        setCell(nx, ny, map[tool]);
+      }
+    }
+  }
+}
+
+function loop() {
+  if (!paused) update();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+
+/* --------------------------------------------------
+   SIMPLE SNAKE GAME
+-------------------------------------------------- */
+const snakeCanvas = document.getElementById("snakeCanvas");
+const sctx = snakeCanvas.getContext("2d");
+
+let snake, food, dx, dy, snakeInterval;
+
+function startSnake() {
+  snake = [{x:150, y:150}];
+  dx = 10; dy = 0;
+  placeFood();
+
+  if (snakeInterval) clearInterval(snakeInterval);
+  snakeInterval = setInterval(updateSnake, 100);
+}
+
+function placeFood() {
+  food = {
+    x: Math.floor(Math.random()*30)*10,
+    y: Math.floor(Math.random()*30)*10
+  };
+}
+
+function updateSnake() {
+  const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+  if (head.x < 0 || head.x >= 300 || head.y < 0 || head.y >= 300) {
+    startSnake();
+    return;
+  }
+
+  snake.unshift(head);
+
+  if (head.x === food.x && head.y === food.y) {
+    placeFood();
+  } else {
+    snake.pop();
+  }
+
+  drawSnake();
+}
+
+function drawSnake() {
+  sctx.fillStyle = "black";
+  sctx.fillRect(0,0,300,300);
+
+  sctx.fillStyle = "lime";
+  snake.forEach(p => sctx.fillRect(p.x, p.y, 10, 10));
+
+  sctx.fillStyle = "red";
+  sctx.fillRect(food.x, food.y, 10, 10);
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowUp" && dy === 0) { dx=0; dy=-10; }
+  if (e.key === "ArrowDown" && dy === 0) { dx=0; dy=10; }
+  if (e.key === "ArrowLeft" && dx === 0) { dx=-10; dy=0; }
+  if (e.key === "ArrowRight" && dx === 0) { dx=10; dy=0; }
+});
+
+</script>
+
 </body>
 </html>
