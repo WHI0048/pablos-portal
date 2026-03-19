@@ -4,51 +4,74 @@
   <meta charset="UTF-8" />
   <title>Pablo's Portal – Menu, Physics Sandbox, Neon Snake</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text","Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #ffd1f3 0, transparent 50%),
-                  radial-gradient(circle at bottom right, #ffe9a3 0, transparent 50%),
-                  linear-gradient(135deg, #ff9ad5, #8fd3ff, #ffe58a);
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #ffd1f3 0, transparent 50%),
+        radial-gradient(circle at bottom right, #ffe9a3 0, transparent 50%),
+        linear-gradient(135deg, #ff9ad5, #8fd3ff, #ffe58a);
       background-attachment: fixed;
       display: flex;
       justify-content: center;
       align-items: center;
       color: #111827;
     }
+
     #app {
       width: 100%;
       max-width: 1120px;
       margin: 20px;
       border-radius: 28px;
       background: rgba(255, 255, 255, 0.18);
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.4);
+      box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.4);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       overflow: hidden;
     }
+
     header {
       padding: 20px 28px 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.7),
+        rgba(255, 255, 255, 0.4)
+      );
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
     }
+
     header h1 {
       font-size: 26px;
       font-weight: 700;
       letter-spacing: 0.03em;
       color: #0f172a;
     }
+
     header p {
       margin-top: 4px;
       font-size: 13px;
       color: #4b5563;
     }
-    main { padding: 20px 24px 24px; }
+
+    main {
+      padding: 20px 24px 24px;
+    }
 
     button {
       cursor: pointer;
@@ -60,22 +83,37 @@
       letter-spacing: 0.02em;
       color: #0f172a;
       background: linear-gradient(135deg, #ffffff, #f3f4ff);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(148, 163, 184, 0.5);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, opacity 0.12s ease;
+      box-shadow:
+        0 8px 18px rgba(15, 23, 42, 0.18),
+        0 0 0 1px rgba(148, 163, 184, 0.5);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        opacity 0.12s ease;
     }
+
     button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(148, 163, 184, 0.7);
+      box-shadow:
+        0 12px 26px rgba(15, 23, 42, 0.25),
+        0 0 0 1px rgba(148, 163, 184, 0.7);
       background: linear-gradient(135deg, #ffffff, #e5e7ff);
     }
+
     button:active {
       transform: translateY(0);
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(148, 163, 184, 0.7);
+      box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.2),
+        0 0 0 1px rgba(148, 163, 184, 0.7);
       opacity: 0.9;
     }
+
     button.secondary {
       background: rgba(255, 255, 255, 0.7);
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(148, 163, 184, 0.4);
+      box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.12),
+        0 0 0 1px rgba(148, 163, 184, 0.4);
       font-weight: 500;
     }
 
@@ -85,22 +123,44 @@
       align-items: center;
     }
 
-    section h2 { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-    section p { font-size: 13px; color: #4b5563; margin-top: 2px; }
+    section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    section p {
+      font-size: 13px;
+      color: #4b5563;
+      margin-top: 2px;
+    }
 
     .game-panel {
       min-width: 320px;
       max-width: 900px;
       border-radius: 22px;
       background: rgba(255, 255, 255, 0.78);
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(148, 163, 184, 0.5);
+      box-shadow:
+        0 16px 40px rgba(15, 23, 42, 0.25),
+        0 0 0 1px rgba(148, 163, 184, 0.5);
       padding: 16px 16px 18px;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       margin: 0 auto;
     }
-    .game-panel h3 { font-size: 15px; margin-bottom: 6px; color: #111827; }
-    .game-panel p { font-size: 12px; color: #6b7280; }
+
+    .game-panel h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .game-panel p {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
     canvas {
       display: block;
       margin: 12px auto 8px;
@@ -118,6 +178,7 @@
       font-size: 12px;
       color: #4b5563;
     }
+
     .sandbox-tool-btn {
       padding: 6px 12px;
       border-radius: 999px;
@@ -127,17 +188,34 @@
       font-weight: 500;
       background: rgba(255, 255, 255, 0.9);
       color: #111827;
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(148, 163, 184, 0.6);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease;
+      box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.18),
+        0 0 0 1px rgba(148, 163, 184, 0.6);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        color 0.12s ease;
     }
+
     .sandbox-tool-btn.active {
       background: linear-gradient(135deg, #eef2ff, #e0f2fe);
       color: #1d4ed8;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35), 0 0 0 1px rgba(129, 140, 248, 0.9);
+      box-shadow:
+        0 8px 18px rgba(37, 99, 235, 0.35),
+        0 0 0 1px rgba(129, 140, 248, 0.9);
       transform: translateY(-1px);
     }
-    .sandbox-tool-btn.danger { color: #b91c1c; }
-    .sandbox-label { font-size: 11px; color: #6b7280; }
+
+    .sandbox-tool-btn.danger {
+      color: #b91c1c;
+    }
+
+    .sandbox-label {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
     select {
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.7);
@@ -146,6 +224,7 @@
       background: rgba(255, 255, 255, 0.9);
       cursor: pointer;
     }
+
     input[type="color"] {
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.7);
@@ -155,28 +234,59 @@
       background: transparent;
       cursor: pointer;
     }
-    input[type="range"] { cursor: pointer; }
 
-    #respawnBtn { display: none; margin-left: 8px; }
-    #lighterStartBtn { display: none; margin-left: 8px; }
-    #laserOnBtn, #laserOffBtn { display: none; }
+    input[type="range"] {
+      cursor: pointer;
+    }
+
+    #respawnBtn {
+      display: none;
+      margin-left: 8px;
+    }
+
+    #lighterStartBtn {
+      display: none;
+      margin-left: 8px;
+    }
+
+    #laserOnBtn,
+    #laserOffBtn {
+      display: none;
+    }
+
+    #rulerBtn {
+      display: none;
+    }
+
+    /* Snake panel */
 
     #snakeCanvas {
       background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 60%, #000000 100%);
     }
+
     #snakeScore {
       font-size: 12px;
       color: #4b5563;
       margin-left: 8px;
     }
+
     #snakeStatus {
       font-size: 12px;
       color: #6b21a8;
       margin-left: 8px;
     }
 
-    .view { display: none; }
-    .view.active { display: block; }
+    /* Views */
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    /* Menu */
 
     #viewMenu .menu-buttons {
       display: flex;
@@ -185,11 +295,13 @@
       margin-top: 18px;
       align-items: center;
     }
+
     #viewMenu .menu-buttons button {
       min-width: 220px;
       padding: 12px 18px;
       font-size: 14px;
     }
+
     #viewMenu .menu-description {
       font-size: 13px;
       color: #4b5563;
@@ -198,10 +310,24 @@
     }
 
     @media (max-width: 768px) {
-      main { padding: 16px 14px 18px; }
-      .game-panel { min-width: 100%; }
-      header { flex-direction: column; align-items: flex-start; }
-      .nav-buttons { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+      main {
+        padding: 16px 14px 18px;
+      }
+
+      .game-panel {
+        min-width: 100%;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-buttons {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
@@ -218,13 +344,16 @@
         <button id="navSnakeBtn" class="secondary">Neon Snake</button>
       </div>
     </header>
+
     <main>
+      <!-- MENU VIEW -->
       <section id="viewMenu" class="view active">
         <div class="game-panel">
           <h3>Welcome to Pablo's Portal</h3>
           <p class="menu-description">
             Choose what you want to play with: a physics sandbox with a tiny player, explosions, a laser pointer,
-            or a neon snake game with screen wrapping and RGB candy power-ups that grant speed, score, and temporary invincibility.
+            or a neon snake game with screen wrapping and RGB candy power-ups that grant speed, score,
+            and temporary invincibility.
           </p>
           <div class="menu-buttons">
             <button id="menuToSandboxBtn">Enter Physics Sandbox</button>
@@ -233,23 +362,27 @@
         </div>
       </section>
 
+      <!-- SANDBOX VIEW -->
       <section id="viewSandbox" class="view">
         <h2>Physics Sandbox</h2>
         <p>
-          Draw solids, liquids, and gases. Spawn a tiny player that can walk and jump. Use the lighter to try to
-          ignite a flame – it only starts 1 in 5 times. If it lights near propane or explosive gas, everything blows up
-          with a pixel-burst explosion and chain reactions. Use the laser pointer to slice through solids (except mirrors),
-          and bounce the beam off mirror blocks. Rotate the laser with Q and E for full 360° control.
+          Draw solids, liquids, and gases. Spawn a tiny player that can walk and jump. Use the lighter to try to ignite
+          a flame – it only starts 1 in 5 times. If it lights near propane or explosive gas, everything blows up with a
+          pixel-burst explosion and chain reactions. Use the laser pointer to slice through solids (except mirrors),
+          and bounce the beam off mirror blocks. Use the ruler to draw perfect straight lines with any material.
         </p>
-        <div style="margin-top:16px;">
+
+        <div style="margin-top: 16px;">
           <div class="game-panel">
             <h3>States of Matter Playground</h3>
             <p>Click and drag to paint. Use the dropdowns to choose types for each state of matter.</p>
+
             <canvas id="sandboxCanvas" width="640" height="360"></canvas>
 
             <div class="sandbox-controls">
               <span class="sandbox-label"><strong>Mode:</strong></span>
-              <button class="sandbox-tool-btn active" data-mode="draw">Draw</button>
+              <button id="drawModeBtn" class="sandbox-tool-btn active" data-mode="draw">Draw</button>
+              <button id="rulerBtn" class="sandbox-tool-btn secondary">Ruler</button>
               <button class="sandbox-tool-btn" data-mode="select">Select</button>
               <button class="sandbox-tool-btn" data-mode="erase">Eraser</button>
               <button class="sandbox-tool-btn" data-mode="fire">Fire</button>
@@ -301,6 +434,7 @@
             <div class="sandbox-controls">
               <span class="sandbox-label"><strong>Brush size:</strong></span>
               <input type="range" id="sandboxSize" min="1" max="10" value="3" />
+
               <span class="sandbox-label"><strong>Color override:</strong></span>
               <input type="color" id="sandboxColor" value="#38bdf8" />
               <span class="sandbox-label">(Leave as-is to use default material colors.)</span>
@@ -313,22 +447,28 @@
         </div>
       </section>
 
+      <!-- SNAKE VIEW -->
       <section id="viewSnake" class="view">
         <h2>Neon Snake</h2>
         <p>
-          Use WASD or Arrow Keys. The snake wraps around the screen edges. Don’t hit your own tail—unless you’re in candy mode.
-          RGB candy fruit (1 in 10) makes the snake super fast, RGB, invincible for 1 minute, and adds +1 score every second.
+          Use WASD or Arrow Keys. The snake wraps around the screen edges. Don’t hit your own tail—unless you’re in
+          candy mode. RGB candy fruit (1 in 10) makes the snake super fast, RGB, invincible for 1 minute, and adds
+          +1 score every second.
         </p>
-        <div style="margin-top:16px;">
+
+        <div style="margin-top: 16px;">
           <div class="game-panel">
             <h3>Neon Snake Arena</h3>
             <p>Screen wrapping, neon glow, and RGB candy power-ups with speed, score, and temporary invincibility.</p>
+
             <canvas id="snakeCanvas" width="480" height="270"></canvas>
+
             <div class="sandbox-controls">
               <button id="snakeStartBtn">Start / Restart Snake</button>
               <span id="snakeScore"><strong>Score:</strong> 0</span>
               <span id="snakeStatus"></span>
             </div>
+
             <div class="sandbox-controls">
               <button id="snakeBackToMenu" class="secondary">Back to Menu</button>
             </div>
@@ -339,7 +479,11 @@
   </div>
 
   <script>
-    (function () {
+    (() => {
+      "use strict";
+
+      /* ========= VIEW NAV ========= */
+
       const viewMenu = document.getElementById("viewMenu");
       const viewSandbox = document.getElementById("viewSandbox");
       const viewSnake = document.getElementById("viewSnake");
@@ -348,6 +492,7 @@
         viewMenu.classList.remove("active");
         viewSandbox.classList.remove("active");
         viewSnake.classList.remove("active");
+
         if (name === "menu") viewMenu.classList.add("active");
         else if (name === "sandbox") viewSandbox.classList.add("active");
         else if (name === "snake") viewSnake.classList.add("active");
@@ -356,10 +501,16 @@
       document.getElementById("navMenuBtn").addEventListener("click", () => showView("menu"));
       document.getElementById("navSandboxBtn").addEventListener("click", () => showView("sandbox"));
       document.getElementById("navSnakeBtn").addEventListener("click", () => showView("snake"));
+
       document.getElementById("menuToSandboxBtn").addEventListener("click", () => showView("sandbox"));
       document.getElementById("menuToSnakeBtn").addEventListener("click", () => showView("snake"));
+
       document.getElementById("sandboxBackToMenu").addEventListener("click", () => showView("menu"));
       document.getElementById("snakeBackToMenu").addEventListener("click", () => showView("menu"));
+
+      /* =========================
+         SANDBOX + PLAYER + LIGHTER + LASER + RULER
+         ========================= */
 
       const canvas = document.getElementById("sandboxCanvas");
       const ctx = canvas.getContext("2d");
@@ -393,6 +544,15 @@
       let dragX = -1;
       let dragY = -1;
 
+      // Ruler state
+      const rulerBtn = document.getElementById("rulerBtn");
+      const drawModeBtn = document.getElementById("drawModeBtn");
+      let rulerEnabled = false;      // draw mode has a ruler tool available
+      let rulerActive = false;       // user toggled ruler button
+      let rulerDrawing = false;      // currently dragging a ruler line
+      let rulerStart = null;
+      let rulerCurrent = null;
+
       const solidTypeSelect = document.getElementById("solidType");
       const liquidTypeSelect = document.getElementById("liquidType");
       const gasTypeSelect = document.getElementById("gasType");
@@ -403,8 +563,10 @@
       const laserOnBtn = document.getElementById("laserOnBtn");
       const laserOffBtn = document.getElementById("laserOffBtn");
 
+      // Player
       let player = null;
-      let keys = {};
+      const keys = {};
+
       const GRAVITY = 0.35;
       const MOVE_ACCEL = 0.6;
       const MOVE_FRICTION = 0.8;
@@ -417,20 +579,22 @@
         ALIVE: "alive",
         POISONED: "poisoned",
         DYING: "dying",
-        DEAD: "dead",
+        DEAD: "dead"
       };
 
-      let lighterPos = { x: cols / 2, y: rows - 5 };
+      // Lighter
+      const lighterPos = { x: cols / 2, y: rows - 5 };
       let lighterLit = false;
       let lighterSpark = false;
       let lighterTimer = 0;
 
       // Laser pointer
       let laserOn = false;
-      let laserAngle = 0;          // degrees
-      const LASER_ROT_SPEED = 3;   // degrees per key press
 
+      // Explosion animation (pixel burst)
       const explosions = [];
+
+      /* ---------- Grid helpers ---------- */
 
       function createGrid() {
         const g = [];
@@ -443,9 +607,11 @@
       }
 
       function clearGrid() {
-        for (let y = 0; y < rows; y++)
-          for (let x = 0; x < cols; x++)
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
             grid[y][x] = null;
+          }
+        }
       }
 
       function cloneCell(cell) {
@@ -457,7 +623,7 @@
           color: cell.color,
           temp: cell.temp,
           life: cell.life,
-          charged: cell.charged || false,
+          charged: cell.charged || false
         };
       }
 
@@ -480,10 +646,14 @@
         return { x, y };
       }
 
+      /* ---------- Colors ---------- */
+
       function defaultColorFor(cell) {
         if (!cell) return "#000000";
+
         if (cell.type === FIRE) return "#f97316";
         if (cell.type === ELECTRIC) return "#e5e7eb";
+
         if (cell.state === SOLID) {
           switch (cell.subtype) {
             case "stone": return "#6b7280";
@@ -493,6 +663,7 @@
             case "mirror": return "#e5f2ff";
           }
         }
+
         if (cell.state === LIQUID) {
           switch (cell.subtype) {
             case "water": return "#38bdf8";
@@ -502,6 +673,7 @@
             case "lava": return "#f97316";
           }
         }
+
         if (cell.state === GAS) {
           switch (cell.subtype) {
             case "poison": return "#84cc16";
@@ -511,18 +683,19 @@
             case "steam": return "#c4ddff";
           }
         }
+
         return "#ffffff";
       }
 
       function makeCellFromSelection() {
-        let cell = {
+        const cell = {
           type: EMPTY,
           state: null,
           subtype: null,
           color: null,
           temp: 20,
           life: 0,
-          charged: false,
+          charged: false
         };
 
         if (mode === "fire") {
@@ -561,15 +734,51 @@
         return cell;
       }
 
+      /* ---------- Ruler drawing ---------- */
+
+      function drawLineWithCurrentMaterial(x0, y0, x1, y1) {
+        const baseCell = makeCellFromSelection();
+
+        let dx = Math.abs(x1 - x0);
+        let sx = x0 < x1 ? 1 : -1;
+        let dy = -Math.abs(y1 - y0);
+        let sy = y0 < y1 ? 1 : -1;
+        let err = dx + dy;
+
+        let x = x0;
+        let y = y0;
+
+        while (true) {
+          const cell = cloneCell(baseCell);
+          placeParticle(x, y, cell);
+
+          if (x === x1 && y === y1) break;
+          const e2 = 2 * err;
+          if (e2 >= dy) {
+            err += dy;
+            x += sx;
+          }
+          if (e2 <= dx) {
+            err += dx;
+            y += sy;
+          }
+        }
+      }
+
+      /* ---------- Painting / interaction ---------- */
+
       function drawBrush(e) {
         const { x, y } = getMouseCell(e);
         if (x < 0 || x >= cols || y < 0 || y >= rows) return;
 
         if (mode === "erase") {
-          for (let dy = -brushSize; dy <= brushSize; dy++)
-            for (let dx = -brushSize; dx <= brushSize; dx++)
-              if (dx * dx + dy * dy <= brushSize * brushSize)
+          for (let dy = -brushSize; dy <= brushSize; dy++) {
+            for (let dx = -brushSize; dx <= brushSize; dx++) {
+              if (dx * dx + dy * dy <= brushSize * brushSize) {
                 eraseParticle(x + dx, y + dy);
+              }
+            }
+          }
           return;
         }
 
@@ -589,6 +798,7 @@
         }
 
         const baseCell = makeCellFromSelection();
+
         for (let dy = -brushSize; dy <= brushSize; dy++) {
           for (let dx = -brushSize; dx <= brushSize; dx++) {
             if (dx * dx + dy * dy <= brushSize * brushSize) {
@@ -611,9 +821,17 @@
             dragX = x;
             dragY = y;
           }
-        } else {
-          drawBrush(e);
+          return;
         }
+
+        if (mode === "draw" && rulerActive) {
+          rulerDrawing = true;
+          rulerStart = { x, y };
+          rulerCurrent = { x, y };
+          return;
+        }
+
+        drawBrush(e);
       });
 
       canvas.addEventListener("mousemove", (e) => {
@@ -627,16 +845,26 @@
           return;
         }
 
+        if (rulerDrawing && rulerActive && mode === "draw") {
+          rulerCurrent = { x, y };
+          return;
+        }
+
         if (!mouseDown) return;
         if (mode === "select") return;
+
+        if (mode === "draw" && rulerActive) return;
+
         drawBrush(e);
       });
 
       canvas.addEventListener("mouseup", () => {
         mouseDown = false;
+
         if (dragging) {
           if (dragX >= 0 && dragX < cols && dragY >= 0 && dragY < rows) {
-            let cell = cloneCell(dragParticle);
+            const cell = cloneCell(dragParticle);
+
             if (state === "solid") {
               cell.state = SOLID;
               cell.type = SOLID;
@@ -650,22 +878,37 @@
               cell.type = GAS;
               cell.subtype = gasTypeSelect.value;
             }
+
             cell.color = colorOverride || defaultColorFor(cell);
             placeParticle(dragX, dragY, cell);
           }
+
           dragging = false;
           dragParticle = null;
         }
+
+        if (rulerDrawing && rulerActive && rulerStart && rulerCurrent && mode === "draw") {
+          drawLineWithCurrentMaterial(rulerStart.x, rulerStart.y, rulerCurrent.x, rulerCurrent.y);
+        }
+
+        rulerDrawing = false;
+        rulerStart = null;
+        rulerCurrent = null;
       });
 
       canvas.addEventListener("mouseleave", () => {
         mouseDown = false;
         hoverX = -1;
         hoverY = -1;
+
         if (dragging) {
           dragging = false;
           dragParticle = null;
         }
+
+        rulerDrawing = false;
+        rulerStart = null;
+        rulerCurrent = null;
       });
 
       const modeButtons = document.querySelectorAll(".sandbox-tool-btn[data-mode]");
@@ -674,11 +917,41 @@
           modeButtons.forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
           mode = btn.getAttribute("data-mode");
+
           lighterStartBtn.style.display = mode === "lighter" ? "inline-block" : "none";
+
           const laserSelected = mode === "laser";
           laserOnBtn.style.display = laserSelected ? "inline-block" : "none";
           laserOffBtn.style.display = laserSelected ? "inline-block" : "none";
+
+          // Ruler visibility: only when Draw mode is selected
+          if (mode === "draw") {
+            rulerBtn.style.display = "inline-block";
+            rulerEnabled = true;
+          } else {
+            rulerBtn.style.display = "none";
+            rulerEnabled = false;
+            rulerActive = false;
+            rulerBtn.classList.remove("active");
+            rulerDrawing = false;
+            rulerStart = null;
+            rulerCurrent = null;
+          }
         });
+      });
+
+      // Ruler button behavior
+      rulerBtn.addEventListener("click", () => {
+        if (!rulerEnabled) return;
+        rulerActive = !rulerActive;
+        if (rulerActive) {
+          rulerBtn.classList.add("active");
+        } else {
+          rulerBtn.classList.remove("active");
+          rulerDrawing = false;
+          rulerStart = null;
+          rulerCurrent = null;
+        }
       });
 
       const stateButtons = document.querySelectorAll(".sandbox-tool-btn[data-state]");
@@ -690,9 +963,7 @@
         });
       });
 
-      document.getElementById("sandboxClear").addEventListener("click", () => {
-        clearGrid();
-      });
+      document.getElementById("sandboxClear").addEventListener("click", clearGrid);
 
       sizeInput.addEventListener("input", () => {
         brushSize = parseInt(sizeInput.value, 10) || 1;
@@ -707,21 +978,27 @@
         lighterSpark = false;
         lighterLit = false;
         lighterTimer = 0.2;
-        const roll = Math.floor(Math.random() * 5);
+
+        const roll = Math.floor(Math.random() * 5); // 0..4
         if (roll === 0) {
           lighterLit = true;
         } else {
           lighterSpark = true;
-          setTimeout(() => { lighterSpark = false; }, 150);
+          setTimeout(() => {
+            lighterSpark = false;
+          }, 150);
         }
       });
 
       laserOnBtn.addEventListener("click", () => {
         laserOn = true;
       });
+
       laserOffBtn.addEventListener("click", () => {
         laserOn = false;
       });
+
+      /* ---------- Cell helpers ---------- */
 
       function inBounds(x, y) {
         return x >= 0 && x < cols && y >= 0 && y < rows;
@@ -733,9 +1010,11 @@
 
       function isFlammable(cell) {
         if (!cell) return false;
+
         if (cell.state === LIQUID && (cell.subtype === "gasoline" || cell.subtype === "poison")) return true;
         if (cell.state === SOLID && (cell.subtype === "wood" || cell.subtype === "sand")) return true;
         if (cell.state === GAS && (cell.subtype === "propane" || cell.subtype === "explosive")) return true;
+
         return false;
       }
 
@@ -793,24 +1072,26 @@
             color: defaultColorFor({ type: FIRE }),
             temp: 600,
             life: 40,
-            charged: false,
+            charged: false
           };
         }
       }
 
+      /* ---------- Explosion animation ---------- */
+
       function spawnExplosionAnimation(cx, cy, radiusCells) {
         const worldX = (cx + 0.5) * cellSizeX;
         const worldY = (cy + 0.5) * cellSizeY;
+
         const particleCount = 120;
         const maxRadius = radiusCells * Math.max(cellSizeX, cellSizeY);
-
         const particles = [];
+
         for (let i = 0; i < particleCount; i++) {
           const angle = Math.random() * Math.PI * 2;
           const speed = (0.5 + Math.random() * 1.5) * (maxRadius / 40);
           const vx = Math.cos(angle) * speed;
           const vy = Math.sin(angle) * speed;
-
           const life = 0.4 + Math.random() * 0.4;
           const phase = Math.random();
 
@@ -828,7 +1109,7 @@
             life,
             maxLife: life,
             color,
-            phase,
+            phase
           });
         }
 
@@ -837,8 +1118,8 @@
           const speed = (0.2 + Math.random() * 0.8) * (maxRadius / 60);
           const vx = Math.cos(angle) * speed;
           const vy = Math.sin(angle) * speed;
-
           const life = 0.8 + Math.random() * 0.6;
+
           particles.push({
             x: worldX,
             y: worldY,
@@ -847,7 +1128,7 @@
             life,
             maxLife: life,
             color: "#111827",
-            phase: Math.random(),
+            phase: Math.random()
           });
         }
 
@@ -858,42 +1139,43 @@
         for (let y = cy - radius; y <= cy + radius; y++) {
           for (let x = cx - radius; x <= cx + radius; x++) {
             if (!inBounds(x, y)) continue;
+
             const dx = x - cx;
             const dy = y - cy;
-            if (dx * dx + dy * dy <= radius * radius) {
-              const cell = g[y][x];
+            if (dx * dx + dy * dy > radius * radius) continue;
 
-              if (player && player.state !== PLAYER_STATE.DEAD) {
-                const px = player.x / cellSizeX;
-                const py = player.y / cellSizeY;
-                const ddx = px - cx;
-                const ddy = py - cy;
-                const dist2 = ddx * ddx + ddy * ddy;
-                if (dist2 <= radius * radius * 4) {
-                  player.state = PLAYER_STATE.DEAD;
-                  respawnBtn.style.display = "inline-block";
-                }
-              }
+            const cell = g[y][x];
 
-              if (cell && (isPropaneGas(cell) || isExplosiveGas(cell))) {
-                g[y][x] = null;
-                explode(g, x, y, radius);
-                continue;
+            if (player && player.state !== PLAYER_STATE.DEAD) {
+              const px = player.x / cellSizeX;
+              const py = player.y / cellSizeY;
+              const ddx = px - cx;
+              const ddy = py - cy;
+              const dist2 = ddx * ddx + ddy * ddy;
+              if (dist2 <= radius * radius * 4) {
+                player.state = PLAYER_STATE.DEAD;
+                respawnBtn.style.display = "inline-block";
               }
+            }
 
-              if (Math.random() < 0.3) {
-                g[y][x] = {
-                  type: FIRE,
-                  state: null,
-                  subtype: "fire",
-                  color: defaultColorFor({ type: FIRE }),
-                  temp: 600,
-                  life: 20,
-                  charged: false,
-                };
-              } else {
-                g[y][x] = null;
-              }
+            if (cell && (isPropaneGas(cell) || isExplosiveGas(cell))) {
+              g[y][x] = null;
+              explode(g, x, y, radius);
+              continue;
+            }
+
+            if (Math.random() < 0.3) {
+              g[y][x] = {
+                type: FIRE,
+                state: null,
+                subtype: "fire",
+                color: defaultColorFor({ type: FIRE }),
+                temp: 600,
+                life: 20,
+                charged: false
+              };
+            } else {
+              g[y][x] = null;
             }
           }
         }
@@ -901,10 +1183,14 @@
         spawnExplosionAnimation(cx, cy, radius);
       }
 
+      /* ---------- Physics update ---------- */
+
       function updatePhysics() {
-        for (let y = 0; y < rows; y++)
-          for (let x = 0; x < cols; x++)
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
             nextGrid[y][x] = null;
+          }
+        }
 
         for (let y = rows - 1; y >= 0; y--) {
           for (let x = 0; x < cols; x++) {
@@ -930,9 +1216,11 @@
           }
         }
 
-        for (let y = 0; y < rows; y++)
-          for (let x = 0; x < cols; x++)
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
             grid[y][x] = nextGrid[y][x];
+          }
+        }
 
         if (laserOn && mode === "laser") {
           applyLaserDestruction();
@@ -940,12 +1228,20 @@
       }
 
       function isLavaNeighbor(x, y) {
-        const offsets = [[0,1],[0,-1],[1,0],[-1,0]];
+        const offsets = [
+          [0, 1],
+          [0, -1],
+          [1, 0],
+          [-1, 0]
+        ];
+
         for (const [dx, dy] of offsets) {
-          const nx = x + dx, ny = y + dy;
+          const nx = x + dx;
+          const ny = y + dy;
           if (!inBounds(nx, ny)) continue;
           if (isLava(grid[ny][nx])) return true;
         }
+
         return false;
       }
 
@@ -955,8 +1251,9 @@
             nextGrid[y + 1][x] = cell;
             return;
           }
+
           const dirs = Math.random() < 0.5 ? [-1, 1] : [1, -1];
-          for (let d of dirs) {
+          for (const d of dirs) {
             if (isEmpty(grid, x + d, y + 1)) {
               nextGrid[y + 1][x + d] = cell;
               return;
@@ -1008,9 +1305,15 @@
         }
 
         if (isAcid(cell)) {
-          const offsets = [[0,1],[0,-1],[1,0],[-1,0]];
+          const offsets = [
+            [0, 1],
+            [0, -1],
+            [1, 0],
+            [-1, 0]
+          ];
           for (const [dx, dy] of offsets) {
-            const nx = x + dx, ny = y + dy;
+            const nx = x + dx;
+            const ny = y + dy;
             if (!inBounds(nx, ny)) continue;
             const neighbor = grid[ny][nx];
             if (neighbor && neighbor.state === SOLID && !isMetal(neighbor) && !isMirror(neighbor)) {
@@ -1019,36 +1322,59 @@
           }
         }
 
-        const offsets = [[0,1],[0,-1],[1,0],[-1,0]];
+        const offsets = [
+          [0, 1],
+          [0, -1],
+          [1, 0],
+          [-1, 0]
+        ];
+
         for (const [dx, dy] of offsets) {
-          const nx = x + dx, ny = y + dy;
+          const nx = x + dx;
+          const ny = y + dy;
           if (!inBounds(nx, ny)) continue;
           const neighbor = grid[ny][nx];
 
           if (isWater(cell) && isLava(neighbor)) {
             nextGrid[y][x] = {
-              type: SOLID, state: SOLID, subtype: "stone",
+              type: SOLID,
+              state: SOLID,
+              subtype: "stone",
               color: defaultColorFor({ state: SOLID, subtype: "stone" }),
-              temp: 100, life: 0, charged: false,
+              temp: 100,
+              life: 0,
+              charged: false
             };
             nextGrid[ny][nx] = {
-              type: SOLID, state: SOLID, subtype: "stone",
+              type: SOLID,
+              state: SOLID,
+              subtype: "stone",
               color: defaultColorFor({ state: SOLID, subtype: "stone" }),
-              temp: 100, life: 0, charged: false,
+              temp: 100,
+              life: 0,
+              charged: false
             };
             return;
           }
 
           if (isLava(cell) && isWater(neighbor)) {
             nextGrid[y][x] = {
-              type: GAS, state: GAS, subtype: "steam",
+              type: GAS,
+              state: GAS,
+              subtype: "steam",
               color: defaultColorFor({ state: GAS, subtype: "steam" }),
-              temp: 200, life: 40, charged: false,
+              temp: 200,
+              life: 40,
+              charged: false
             };
             nextGrid[ny][nx] = {
-              type: SOLID, state: SOLID, subtype: "stone",
+              type: SOLID,
+              state: SOLID,
+              subtype: "stone",
               color: defaultColorFor({ state: SOLID, subtype: "stone" }),
-              temp: 80, life: 0, charged: false,
+              temp: 80,
+              life: 0,
+              charged: false
             };
             return;
           }
@@ -1071,7 +1397,7 @@
         }
 
         const dirs = Math.random() < 0.5 ? [-1, 1] : [1, -1];
-        for (let d of dirs) {
+        for (const d of dirs) {
           const nx = x + d;
           const ny = cell.subtype === "propane" ? y + 1 : y - 1;
           if (inBounds(nx, ny) && !grid[ny][nx] && !nextGrid[ny][nx]) {
@@ -1081,7 +1407,7 @@
         }
 
         const sideDirs = Math.random() < 0.5 ? [-1, 1] : [1, -1];
-        for (let d of sideDirs) {
+        for (const d of sideDirs) {
           const nx = x + d;
           if (inBounds(nx, y) && !grid[y][nx] && !nextGrid[y][nx]) {
             nextGrid[y][nx] = cell;
@@ -1094,27 +1420,40 @@
           if (cell.life <= 0) {
             if (Math.random() < 0.3 && y + 1 < rows && !grid[y + 1][x]) {
               nextGrid[y + 1][x] = {
-                type: LIQUID, state: LIQUID, subtype: "water",
+                type: LIQUID,
+                state: LIQUID,
+                subtype: "water",
                 color: defaultColorFor({ state: LIQUID, subtype: "water" }),
-                temp: 40, life: 0, charged: false,
+                temp: 40,
+                life: 0,
+                charged: false
               };
               return;
-            } else {
-              return;
             }
+            return;
           }
         }
 
         if (isPoisonGas(cell)) {
-          const offsets = [[0,1],[0,-1],[1,0],[-1,0]];
+          const offsets = [
+            [0, 1],
+            [0, -1],
+            [1, 0],
+            [-1, 0]
+          ];
           for (const [dx, dy] of offsets) {
-            const nx = x + dx, ny = y + dy;
+            const nx = x + dx;
+            const ny = y + dy;
             if (!inBounds(nx, ny)) continue;
             if (!grid[ny][nx] && !nextGrid[ny][nx] && Math.random() < 0.05) {
               nextGrid[ny][nx] = {
-                type: GAS, state: GAS, subtype: "poison",
+                type: GAS,
+                state: GAS,
+                subtype: "poison",
                 color: defaultColorFor({ state: GAS, subtype: "poison" }),
-                temp: 25, life: 80, charged: false,
+                temp: 25,
+                life: 80,
+                charged: false
               };
             }
           }
@@ -1128,18 +1467,30 @@
         if (cell.life <= 0) {
           if (Math.random() < 0.4) {
             nextGrid[y][x] = {
-              type: GAS, state: GAS, subtype: "smoke",
+              type: GAS,
+              state: GAS,
+              subtype: "smoke",
               color: defaultColorFor({ state: GAS, subtype: "smoke" }),
-              temp: 80, life: 60, charged: false,
+              temp: 80,
+              life: 60,
+              charged: false
             };
           }
           return;
         }
 
-        const offsets = [[0,1],[0,-1],[1,0],[-1,0]];
+        const offsets = [
+          [0, 1],
+          [0, -1],
+          [1, 0],
+          [-1, 0]
+        ];
+
         for (const [dx, dy] of offsets) {
-          const nx = x + dx, ny = y + dy;
+          const nx = x + dx;
+          const ny = y + dy;
           if (!inBounds(nx, ny)) continue;
+
           const neighbor = grid[ny][nx];
           if (!neighbor) continue;
 
@@ -1152,9 +1503,13 @@
           if (neighbor.state === LIQUID && neighbor.subtype === "water") {
             if (Math.random() < 0.2) {
               grid[ny][nx] = {
-                type: GAS, state: GAS, subtype: "steam",
+                type: GAS,
+                state: GAS,
+                subtype: "steam",
                 color: defaultColorFor({ state: GAS, subtype: "steam" }),
-                temp: 120, life: 40, charged: false,
+                temp: 120,
+                life: 40,
+                charged: false
               };
               cell.life -= 5;
             }
@@ -1172,18 +1527,30 @@
         cell.life--;
         if (cell.life <= 0) return;
 
-        const offsets = [[0,1],[0,-1],[1,0],[-1,0]];
+        const offsets = [
+          [0, 1],
+          [0, -1],
+          [1, 0],
+          [-1, 0]
+        ];
+
         for (const [dx, dy] of offsets) {
-          const nx = x + dx, ny = y + dy;
+          const nx = x + dx;
+          const ny = y + dy;
           if (!inBounds(nx, ny)) continue;
+
           const neighbor = grid[ny][nx];
 
           if (neighbor && isMetal(neighbor)) {
             if (!nextGrid[ny][nx]) {
               nextGrid[ny][nx] = {
-                type: ELECTRIC, state: null, subtype: "electric",
+                type: ELECTRIC,
+                state: null,
+                subtype: "electric",
                 color: defaultColorFor({ type: ELECTRIC }),
-                temp: 80, life: 6, charged: true,
+                temp: 80,
+                life: 6,
+                charged: true
               };
             }
           }
@@ -1200,9 +1567,12 @@
         if (!nextGrid[y][x]) nextGrid[y][x] = cell;
       }
 
+      /* ---------- Player ---------- */
+
       function spawnPlayerAt(cellX, cellY) {
         const px = cellX * cellSizeX;
         const py = cellY * cellSizeY - (PLAYER_HEIGHT - cellSizeY);
+
         player = {
           x: px,
           y: py,
@@ -1213,8 +1583,9 @@
           animTime: 0,
           state: PLAYER_STATE.ALIVE,
           poisonTimer: 0,
-          shakePhase: 0,
+          shakePhase: 0
         };
+
         respawnBtn.style.display = "none";
       }
 
@@ -1222,29 +1593,10 @@
         spawnPlayerAt(Math.floor(cols / 2), 10);
       }
 
-      respawnBtn.addEventListener("click", () => {
-        respawnPlayer();
-      });
-
-      function angleToDir(angleDeg) {
-        const rad = angleDeg * Math.PI / 180;
-        return { dx: Math.cos(rad), dy: Math.sin(rad) };
-      }
+      respawnBtn.addEventListener("click", respawnPlayer);
 
       window.addEventListener("keydown", (e) => {
-        const k = e.key.toLowerCase();
-        keys[k] = true;
-
-        if (mode === "laser") {
-          if (k === "q") {
-            laserAngle -= LASER_ROT_SPEED;
-            if (laserAngle < 0) laserAngle += 360;
-          }
-          if (k === "e") {
-            laserAngle += LASER_ROT_SPEED;
-            if (laserAngle >= 360) laserAngle -= 360;
-          }
-        }
+        keys[e.key.toLowerCase()] = true;
       });
 
       window.addEventListener("keyup", (e) => {
@@ -1287,9 +1639,14 @@
         const jump = keys["w"] || keys["arrowup"];
 
         if (player.state === PLAYER_STATE.ALIVE || player.state === PLAYER_STATE.POISONED) {
-          if (left) { player.vx -= MOVE_ACCEL; player.facing = -1; }
-          if (right) { player.vx += MOVE_ACCEL; player.facing = 1; }
-
+          if (left) {
+            player.vx -= MOVE_ACCEL;
+            player.facing = -1;
+          }
+          if (right) {
+            player.vx += MOVE_ACCEL;
+            player.facing = 1;
+          }
           if (!left && !right) player.vx *= MOVE_FRICTION;
 
           if (player.vx > MAX_SPEED_X) player.vx = MAX_SPEED_X;
@@ -1314,14 +1671,16 @@
             [nx - halfW, ny - halfH],
             [nx + halfW, ny - halfH],
             [nx - halfW, ny + halfH],
-            [nx + halfW, ny + halfH],
+            [nx + halfW, ny + halfH]
           ];
+
           for (const [wx, wy] of corners) {
             const cx = Math.floor(wx / cellSizeX);
             const cy = Math.floor(wy / cellSizeY);
             if (!inBounds(cx, cy)) return true;
             if (isSolidForPlayer(cx, cy)) return true;
           }
+
           return false;
         }
 
@@ -1336,6 +1695,7 @@
 
         let targetY = newY;
         player.onGround = false;
+
         if (collidesAt(targetX, targetY)) {
           if (player.vy > 0) {
             while (!collidesAt(targetX, player.y + 1) && player.y < targetY) {
@@ -1358,10 +1718,12 @@
           const samplePoints = [
             [player.x, player.y],
             [player.x, player.y - halfH],
-            [player.x, player.y + halfH],
+            [player.x, player.y + halfH]
           ];
+
           let poisoned = false;
           let lethal = false;
+
           for (const [wx, wy] of samplePoints) {
             const cell = getCellAtWorld(wx, wy);
             if (isPoisonForPlayer(cell)) poisoned = true;
@@ -1460,6 +1822,8 @@
         ctx.restore();
       }
 
+      /* ---------- Lighter ---------- */
+
       function updateLighter(dt) {
         if (lighterTimer > 0) {
           lighterTimer -= dt;
@@ -1468,24 +1832,27 @@
           }
         }
 
-        if (lighterLit) {
-          const fx = Math.floor(lighterPos.x);
-          const fy = Math.floor(lighterPos.y - 1);
-          const radius = 3;
-          for (let y = fy - radius; y <= fy + radius; y++) {
-            for (let x = fx - radius; x <= fx + radius; x++) {
-              if (!inBounds(x, y)) continue;
-              const cell = grid[y][x];
-              if (isExplosiveGas(cell) || isPropaneGas(cell)) {
-                explode(grid, x, y, 11);
-                lighterLit = false;
-                if (player && player.state !== PLAYER_STATE.DEAD) {
-                  player.state = PLAYER_STATE.DEAD;
-                  respawnBtn.style.display = "inline-block";
-                }
-              } else if (isFlammable(cell)) {
-                if (Math.random() < 0.1) igniteCell(grid, x, y);
+        if (!lighterLit) return;
+
+        const fx = Math.floor(lighterPos.x);
+        const fy = Math.floor(lighterPos.y - 1);
+        const radius = 3;
+
+        for (let y = fy - radius; y <= fy + radius; y++) {
+          for (let x = fx - radius; x <= fx + radius; x++) {
+            if (!inBounds(x, y)) continue;
+            const cell = grid[y][x];
+
+            if (isExplosiveGas(cell) || isPropaneGas(cell)) {
+              explode(grid, x, y, 11);
+              lighterLit = false;
+
+              if (player && player.state !== PLAYER_STATE.DEAD) {
+                player.state = PLAYER_STATE.DEAD;
+                respawnBtn.style.display = "inline-block";
               }
+            } else if (isFlammable(cell)) {
+              if (Math.random() < 0.1) igniteCell(grid, x, y);
             }
           }
         }
@@ -1530,28 +1897,26 @@
         ctx.restore();
       }
 
+      /* ---------- Laser ---------- */
+
       function applyLaserDestruction() {
-        if (!laserOn || mode !== "laser") return;
-        if (hoverX < 0 || hoverY < 0 || hoverX >= cols || hoverY >= rows) return;
+        if (hoverX < 0 || hoverX >= cols || hoverY < 0 || hoverY >= rows) return;
 
-        let { dx, dy } = angleToDir(laserAngle);
-        let x = hoverX + 0.5;
-        let y = hoverY + 0.5;
-
-        const maxSteps = 800;
-        const maxBounces = 12;
+        let x = hoverX;
+        let y = hoverY;
+        let dx = 1;
+        let dy = 0;
         let bounces = 0;
 
-        for (let i = 0; i < maxSteps; i++) {
-          x += dx * 0.2;
-          y += dy * 0.2;
+        const maxBounces = 8;
+        const maxSteps = 600;
 
-          const cx = Math.floor(x);
-          const cy = Math.floor(y);
+        for (let step = 0; step < maxSteps; step++) {
+          x += dx;
+          y += dy;
+          if (!inBounds(x, y)) break;
 
-          if (!inBounds(cx, cy)) break;
-
-          const cell = grid[cy][cx];
+          const cell = grid[y][x];
           if (!cell) continue;
 
           if (cell.state === SOLID) {
@@ -1559,72 +1924,96 @@
               if (bounces >= maxBounces) break;
               bounces++;
 
-              const normal = 45 * (Math.PI / 180);
-              const incoming = Math.atan2(dy, dx);
-              const reflected = 2 * normal - incoming;
-
-              dx = Math.cos(reflected);
-              dy = Math.sin(reflected);
+              if (dx !== 0 && dy === 0) {
+                dx = 0;
+                dy = -1;
+              } else if (dy !== 0 && dx === 0) {
+                dx = 1;
+                dy = 0;
+              } else {
+                const tmp = dx;
+                dx = dy;
+                dy = tmp;
+              }
               continue;
-            } else {
-              grid[cy][cx] = null;
-              break;
             }
+
+            grid[y][x] = null;
+            break;
           }
         }
       }
 
       function renderLaser() {
         if (!laserOn || mode !== "laser") return;
-        if (hoverX < 0 || hoverY < 0 || hoverX >= cols || hoverY >= rows) return;
+        if (hoverX < 0 || hoverX >= cols || hoverY < 0 || hoverY >= rows) return;
 
-        let { dx, dy } = angleToDir(laserAngle);
-        let x = hoverX + 0.5;
-        let y = hoverY + 0.5;
-
-        const maxSteps = 800;
-        const maxBounces = 12;
+        let x = hoverX;
+        let y = hoverY;
+        let dx = 1;
+        let dy = 0;
         let bounces = 0;
 
+        const maxBounces = 8;
+        const maxSteps = 600;
         const segments = [];
-        let startX = x;
-        let startY = y;
 
-        for (let i = 0; i < maxSteps; i++) {
-          x += dx * 0.2;
-          y += dy * 0.2;
+        let startX = x + 0.5;
+        let startY = y + 0.5;
 
-          const cx = Math.floor(x);
-          const cy = Math.floor(y);
+        for (let step = 0; step < maxSteps; step++) {
+          x += dx;
+          y += dy;
 
-          if (!inBounds(cx, cy)) {
-            segments.push({ x1: startX, y1: startY, x2: x, y2: y });
+          if (!inBounds(x, y)) {
+            segments.push({
+              x1: startX,
+              y1: startY,
+              x2: x - dx + 0.5,
+              y2: y - dy + 0.5
+            });
             break;
           }
 
-          const cell = grid[cy][cx];
+          const cell = grid[y][x];
           if (!cell) continue;
 
           if (cell.state === SOLID) {
-            segments.push({ x1: startX, y1: startY, x2: x, y2: y });
-
             if (isMirror(cell)) {
+              segments.push({
+                x1: startX,
+                y1: startY,
+                x2: x + 0.5,
+                y2: y + 0.5
+              });
+
               if (bounces >= maxBounces) break;
               bounces++;
 
-              const normal = 45 * (Math.PI / 180);
-              const incoming = Math.atan2(dy, dx);
-              const reflected = 2 * normal - incoming;
+              if (dx !== 0 && dy === 0) {
+                dx = 0;
+                dy = -1;
+              } else if (dy !== 0 && dx === 0) {
+                dx = 1;
+                dy = 0;
+              } else {
+                const tmp = dx;
+                dx = dy;
+                dy = tmp;
+              }
 
-              dx = Math.cos(reflected);
-              dy = Math.sin(reflected);
-
-              startX = x;
-              startY = y;
+              startX = x + 0.5;
+              startY = y + 0.5;
               continue;
-            } else {
-              break;
             }
+
+            segments.push({
+              x1: startX,
+              y1: startY,
+              x2: x + 0.5,
+              y2: y + 0.5
+            });
+            break;
           }
         }
 
@@ -1639,13 +2028,14 @@
         const b = Math.floor(200 + 55 * Math.sin(t + 4));
         ctx.strokeStyle = `rgba(${r},${g},${b},0.95)`;
 
-        for (const seg of segments) {
+        segments.forEach((seg) => {
           ctx.beginPath();
           ctx.moveTo(seg.x1 * cellSizeX, seg.y1 * cellSizeY);
           ctx.lineTo(seg.x2 * cellSizeX, seg.y2 * cellSizeY);
           ctx.stroke();
-        }
+        });
 
+        ctx.shadowBlur = 0;
         ctx.restore();
 
         const px = (hoverX + 0.5) * cellSizeX;
@@ -1653,8 +2043,6 @@
 
         ctx.save();
         ctx.translate(px, py);
-        ctx.rotate(laserAngle * Math.PI / 180);
-
         ctx.fillStyle = "#111827";
         ctx.beginPath();
         ctx.arc(0, 0, 4, 0, Math.PI * 2);
@@ -1662,16 +2050,18 @@
 
         ctx.fillStyle = `rgba(${r},${g},${b},1)`;
         ctx.beginPath();
-        ctx.arc(4, 0, 2, 0, Math.PI * 2);
+        ctx.arc(0, 0, 2, 0, Math.PI * 2);
         ctx.fill();
-
         ctx.restore();
       }
+
+      /* ---------- Explosion particles ---------- */
 
       function updateExplosions(dt) {
         for (let i = explosions.length - 1; i >= 0; i--) {
           const exp = explosions[i];
           const particles = exp.particles;
+
           for (let j = particles.length - 1; j >= 0; j--) {
             const p = particles[j];
             p.life -= dt;
@@ -1679,10 +2069,12 @@
               particles.splice(j, 1);
               continue;
             }
+
             p.x += p.vx;
             p.y += p.vy;
             p.vy += 20 * dt * 0.1;
           }
+
           if (particles.length === 0) {
             explosions.splice(i, 1);
           }
@@ -1704,13 +2096,17 @@
         }
       }
 
+      /* ---------- Sandbox render ---------- */
+
       function renderSandbox() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         for (let y = 0; y < rows; y++) {
           for (let x = 0; x < cols; x++) {
             const cell = grid[y][x];
             if (!cell) continue;
-            let color = cell.color || defaultColorFor(cell);
+
+            const color = cell.color || defaultColorFor(cell);
             ctx.fillStyle = color;
             ctx.fillRect(x * cellSizeX, y * cellSizeY, cellSizeX, cellSizeY);
           }
@@ -1728,11 +2124,31 @@
         }
 
         if (dragging && dragParticle && dragX >= 0 && dragX < cols && dragY >= 0 && dragY < rows) {
-          let color = colorOverride || dragParticle.color || defaultColorFor(dragParticle);
+          const color = colorOverride || dragParticle.color || defaultColorFor(dragParticle);
           ctx.fillStyle = color;
           ctx.globalAlpha = 0.7;
           ctx.fillRect(dragX * cellSizeX, dragY * cellSizeY, cellSizeX, cellSizeY);
           ctx.globalAlpha = 1;
+        }
+
+        // Ruler preview line (smooth, not pixelated)
+        if (rulerActive && rulerDrawing && rulerStart && rulerCurrent) {
+          const x1 = (rulerStart.x + 0.5) * cellSizeX;
+          const y1 = (rulerStart.y + 0.5) * cellSizeY;
+          const x2 = (rulerCurrent.x + 0.5) * cellSizeX;
+          const y2 = (rulerCurrent.y + 0.5) * cellSizeY;
+
+          ctx.save();
+          ctx.lineWidth = 2;
+          ctx.setLineDash([6, 4]);
+          ctx.strokeStyle = "rgba(129,140,248,0.95)";
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = "rgba(129,140,248,0.9)";
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+          ctx.restore();
         }
 
         renderPlayer();
@@ -1741,7 +2157,10 @@
         renderLaser();
       }
 
+      /* ---------- Sandbox loop ---------- */
+
       let lastTime = performance.now();
+
       function sandboxLoop(now) {
         const dt = Math.min((now - lastTime) / 1000, 0.05);
         lastTime = now;
@@ -1751,13 +2170,17 @@
         updateLighter(dt);
         updateExplosions(dt);
         renderSandbox();
+
         requestAnimationFrame(sandboxLoop);
       }
 
       requestAnimationFrame(sandboxLoop);
 
+      /* ========== NEON SNAKE ========== */
+
       const snakeCanvas = document.getElementById("snakeCanvas");
       const sctx = snakeCanvas.getContext("2d");
+
       const snakeStartBtn = document.getElementById("snakeStartBtn");
       const snakeScoreEl = document.getElementById("snakeScore");
       const snakeStatusEl = document.getElementById("snakeStatus");
@@ -1775,6 +2198,7 @@
       let snakeAlive = false;
       let snakeScore = 0;
       let snakeLastStep = 0;
+
       const baseStepInterval = 0.12;
       const fastStepInterval = 0.04;
       let snakeStepInterval = baseStepInterval;
@@ -1786,17 +2210,20 @@
       function resetSnake() {
         snake = [
           { x: Math.floor(gridCols / 2) - 1, y: Math.floor(gridRows / 2) },
-          { x: Math.floor(gridCols / 2), y: Math.floor(gridRows / 2) },
+          { x: Math.floor(gridCols / 2), y: Math.floor(gridRows / 2) }
         ];
+
         snakeDir = { x: 1, y: 0 };
         snakeNextDir = { x: 1, y: 0 };
         snakeScore = 0;
         snakeAlive = true;
         snakeLastStep = performance.now() / 1000;
         snakeStepInterval = baseStepInterval;
+
         candyActive = false;
         candyTimer = 0;
         candyScoreTimer = 0;
+
         spawnFood();
         updateSnakeScore();
         snakeStatusEl.textContent = "";
@@ -1806,9 +2233,9 @@
         while (true) {
           const fx = Math.floor(Math.random() * gridCols);
           const fy = Math.floor(Math.random() * gridRows);
-          if (!snake.some(seg => seg.x === fx && seg.y === fy)) {
+          if (!snake.some((seg) => seg.x === fx && seg.y === fy)) {
             snakeFood = { x: fx, y: fy };
-            snakeFoodIsCandy = (Math.floor(Math.random() * 10) === 0);
+            snakeFoodIsCandy = Math.floor(Math.random() * 10) === 0;
             break;
           }
         }
@@ -1820,6 +2247,7 @@
 
       function updateSnakeDirectionFromKey(key) {
         if (!snakeAlive) return;
+
         if (key === "arrowup" || key === "w") {
           if (snakeDir.y === 0) snakeNextDir = { x: 0, y: -1 };
         } else if (key === "arrowdown" || key === "s") {
@@ -1836,9 +2264,7 @@
         updateSnakeDirectionFromKey(k);
       });
 
-      snakeStartBtn.addEventListener("click", () => {
-        resetSnake();
-      });
+      snakeStartBtn.addEventListener("click", resetSnake);
 
       function activateCandyEffect() {
         candyActive = true;
@@ -1860,19 +2286,21 @@
       function stepSnake(nowSec) {
         if (!snakeAlive) return;
         if (nowSec - snakeLastStep < snakeStepInterval) return;
-        snakeLastStep = nowSec;
 
+        snakeLastStep = nowSec;
         snakeDir = snakeNextDir;
+
         const head = snake[snake.length - 1];
         let newX = head.x + snakeDir.x;
         let newY = head.y + snakeDir.y;
 
         if (newX < 0) newX = gridCols - 1;
         else if (newX >= gridCols) newX = 0;
+
         if (newY < 0) newY = gridRows - 1;
         else if (newY >= gridRows) newY = 0;
 
-        if (!candyActive && snake.some(seg => seg.x === newX && seg.y === newY)) {
+        if (!candyActive && snake.some((seg) => seg.x === newX && seg.y === newY)) {
           snakeAlive = false;
           snakeStatusEl.textContent = "Game Over – hit your tail.";
           deactivateCandyEffect();
@@ -1898,12 +2326,14 @@
 
         sctx.strokeStyle = "rgba(15,23,42,0.4)";
         sctx.lineWidth = 1;
+
         for (let x = 0; x <= gridCols; x++) {
           sctx.beginPath();
           sctx.moveTo(x * cellW + 0.5, 0);
           sctx.lineTo(x * cellW + 0.5, snakeCanvas.height);
           sctx.stroke();
         }
+
         for (let y = 0; y <= gridRows; y++) {
           sctx.beginPath();
           sctx.moveTo(0, y * cellH + 0.5);
@@ -1914,28 +2344,40 @@
         if (snakeFood) {
           const fx = snakeFood.x * cellW;
           const fy = snakeFood.y * cellH;
+
           if (snakeFoodIsCandy) {
             const t = nowSec * 2;
             const r = Math.floor(128 + 127 * Math.sin(t));
             const g = Math.floor(128 + 127 * Math.sin(t + 2));
             const b = Math.floor(128 + 127 * Math.sin(t + 4));
+
             const grad = sctx.createRadialGradient(
-              fx + cellW / 2, fy + cellH / 2, 2,
-              fx + cellW / 2, fy + cellH / 2, Math.max(cellW, cellH) / 2
+              fx + cellW / 2,
+              fy + cellH / 2,
+              2,
+              fx + cellW / 2,
+              fy + cellH / 2,
+              Math.max(cellW, cellH) / 2
             );
             grad.addColorStop(0, `rgba(${r},${g},${b},1)`);
             grad.addColorStop(1, `rgba(${r},${g},${b},0.1)`);
+
             sctx.fillStyle = grad;
             sctx.beginPath();
             sctx.roundRect(fx + 3, fy + 3, cellW - 6, cellH - 6, 4);
             sctx.fill();
           } else {
             const grad = sctx.createRadialGradient(
-              fx + cellW / 2, fy + cellH / 2, 2,
-              fx + cellW / 2, fy + cellH / 2, Math.max(cellW, cellH) / 2
+              fx + cellW / 2,
+              fy + cellH / 2,
+              2,
+              fx + cellW / 2,
+              fy + cellH / 2,
+              Math.max(cellW, cellH) / 2
             );
             grad.addColorStop(0, "#f472b6");
             grad.addColorStop(1, "#581c87");
+
             sctx.fillStyle = grad;
             sctx.beginPath();
             sctx.roundRect(fx + 3, fy + 3, cellW - 6, cellH - 6, 4);
@@ -1953,15 +2395,18 @@
             const r = Math.floor(128 + 127 * Math.sin(t));
             const g = Math.floor(128 + 127 * Math.sin(t + 2));
             const b = Math.floor(128 + 127 * Math.sin(t + 4));
+
             const grad = sctx.createLinearGradient(sx, sy, sx + cellW, sy + cellH);
             grad.addColorStop(0, `rgba(${r},${g},${b},1)`);
             grad.addColorStop(1, `rgba(${r},${g},${b},0.6)`);
+
             sctx.fillStyle = grad;
             sctx.shadowColor = `rgba(${r},${g},${b},0.7)`;
           } else {
             const grad = sctx.createLinearGradient(sx, sy, sx + cellW, sy + cellH);
             grad.addColorStop(0, "rgba(34,211,238,1)");
             grad.addColorStop(1, "rgba(59,130,246,1)");
+
             sctx.fillStyle = grad;
             sctx.shadowColor = "rgba(56,189,248,0.7)";
           }
@@ -1976,16 +2421,21 @@
         if (!snakeAlive && snake.length > 0) {
           sctx.fillStyle = "rgba(15,23,42,0.7)";
           sctx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+
           sctx.fillStyle = "#e5e7eb";
           sctx.font = "16px system-ui";
           sctx.textAlign = "center";
           sctx.fillText("Game Over", snakeCanvas.width / 2, snakeCanvas.height / 2 - 6);
+
           sctx.font = "12px system-ui";
           sctx.fillText("Press Start / Restart", snakeCanvas.width / 2, snakeCanvas.height / 2 + 12);
         }
       }
 
+      /* ---------- Snake loop ---------- */
+
       let lastSnakeTime = performance.now() / 1000;
+
       function snakeLoop(now) {
         const nowSec = now / 1000;
         const dt = nowSec - lastSnakeTime;
@@ -2007,6 +2457,7 @@
 
         stepSnake(nowSec);
         renderSnake(nowSec);
+
         requestAnimationFrame(snakeLoop);
       }
 
