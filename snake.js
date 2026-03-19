@@ -1,151 +1,144 @@
-/* ============================================================
-   snake.js — Neon Snake Mini‑Game for Pablo's Portal
-   - Runs inside its own canvas panel
-   - Neon cyber‑arcade glow
-   - Smooth movement + grid logic
-   - No interference with sandbox engine
-============================================================ */
+// =====================================================
+// NEON SNAKE — GLOBAL VARIABLES + FUNCTIONS
+// =====================================================
 
-console.log("%c[Snake] Loaded snake.js", "color:#0f9");
-
-// Canvas
-const snakeCanvas = document.getElementById("snake-canvas");
-const snakeCtx = snakeCanvas.getContext("2d");
-
-// Grid
-const SNAKE_SIZE = 20;
-const SNAKE_COLS = 20;
-const SNAKE_ROWS = 20;
-
-// Game state
-let snake = [{ x: 10, y: 10 }];
-let snakeDir = { x: 1, y: 0 };
-let snakeFood = { x: 5, y: 5 };
-let snakeSpeed = 140; // ms per move
+let snakeCanvas, snakeCtx;
+let snakeGrid = 20;
+let snakeSpeed = 120; // ms per step
 let snakeTimer = 0;
+
+let snake = [
+    { x: 10, y: 10 },
+    { x: 9, y: 10 },
+    { x: 8, y: 10 }
+];
+
+let snakeDir = { x: 1, y: 0 };
+let snakeFood = { x: 15, y: 10 };
 let snakeAlive = true;
 
-// Input
-document.addEventListener("keydown", e => {
-  if (!snakeAlive) return;
+// -----------------------------------------------------
+// Initialize snake game
+// -----------------------------------------------------
+function initSnakeGame(canvas) {
+    snakeCanvas = canvas;
+    snakeCtx = canvas.getContext("2d");
 
-  if (e.key === "ArrowUp" && snakeDir.y !== 1) snakeDir = { x: 0, y: -1 };
-  if (e.key === "ArrowDown" && snakeDir.y !== -1) snakeDir = { x: 0, y: 1 };
-  if (e.key === "ArrowLeft" && snakeDir.x !== 1) snakeDir = { x: -1, y: 0 };
-  if (e.key === "ArrowRight" && snakeDir.x !== -1) snakeDir = { x: 1, y: 0 };
-});
+    snake = [
+        { x: 10, y: 10 },
+        { x: 9, y: 10 },
+        { x: 8, y: 10 }
+    ];
 
-// Random food
-function spawnFood() {
-  snakeFood.x = Math.floor(Math.random() * SNAKE_COLS);
-  snakeFood.y = Math.floor(Math.random() * SNAKE_ROWS);
+    snakeDir = { x: 1, y: 0 };
+    snakeFood = randomFood();
+    snakeAlive = true;
+    snakeTimer = performance.now();
 }
 
-// Update
-function updateSnake(dt) {
-  if (!snakeAlive) return;
+// -----------------------------------------------------
+// Random food position
+// -----------------------------------------------------
+function randomFood() {
+    return {
+        x: Math.floor(Math.random() * (snakeCanvas.width / snakeGrid)),
+        y: Math.floor(Math.random() * (snakeCanvas.height / snakeGrid))
+    };
+}
 
-  snakeTimer += dt;
-  if (snakeTimer < snakeSpeed) return;
-  snakeTimer = 0;
+// -----------------------------------------------------
+// Handle input (global keys set in index.html)
+// -----------------------------------------------------
+function updateSnakeInput() {
+    if (keyLeft && snakeDir.x !== 1) snakeDir = { x: -1, y: 0 };
+    if (keyRight && snakeDir.x !== -1) snakeDir = { x: 1, y: 0 };
+    if (keyUp && snakeDir.y !== 1) snakeDir = { x: 0, y: -1 };
+    if (keyDown && snakeDir.y !== -1) snakeDir = { x: 0, y: 1 };
+}
 
-  const head = snake[0];
-  const newHead = {
-    x: head.x + snakeDir.x,
-    y: head.y + snakeDir.y
-  };
+// -----------------------------------------------------
+// Update snake logic
+// -----------------------------------------------------
+function updateSnake() {
+    if (!snakeAlive) return;
 
-  // Wall collision
-  if (
-    newHead.x < 0 ||
-    newHead.y < 0 ||
-    newHead.x >= SNAKE_COLS ||
-    newHead.y >= SNAKE_ROWS
-  ) {
-    snakeAlive = false;
-    return;
-  }
+    let now = performance.now();
+    if (now - snakeTimer < snakeSpeed) return;
+    snakeTimer = now;
 
-  // Self collision
-  for (let s of snake) {
-    if (s.x === newHead.x && s.y === newHead.y) {
-      snakeAlive = false;
-      return;
+    updateSnakeInput();
+
+    // New head
+    let head = {
+        x: snake[0].x + snakeDir.x,
+        y: snake[0].y + snakeDir.y
+    };
+
+    // Wall wrapping
+    let maxX = snakeCanvas.width / snakeGrid;
+    let maxY = snakeCanvas.height / snakeGrid;
+
+    if (head.x < 0) head.x = maxX - 1;
+    if (head.x >= maxX) head.x = 0;
+    if (head.y < 0) head.y = maxY - 1;
+    if (head.y >= maxY) head.y = 0;
+
+    // Self collision
+    for (let s of snake) {
+        if (s.x === head.x && s.y === head.y) {
+            snakeAlive = false;
+            return;
+        }
     }
-  }
 
-  snake.unshift(newHead);
+    snake.unshift(head);
 
-  // Food
-  if (newHead.x === snakeFood.x && newHead.y === snakeFood.y) {
-    spawnFood();
-  } else {
-    snake.pop();
-  }
+    // Eat food
+    if (head.x === snakeFood.x && head.y === snakeFood.y) {
+        snakeFood = randomFood();
+    } else {
+        snake.pop();
+    }
 }
 
-// Render
-function renderSnake() {
-  snakeCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+// -----------------------------------------------------
+// Draw snake game
+// -----------------------------------------------------
+function drawSnake() {
+    if (!snakeCtx) return;
 
-  // Background glow
-  snakeCtx.fillStyle = "#000000";
-  snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+    snakeCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
 
-  // Food
-  snakeCtx.fillStyle = "#ff00ff";
-  snakeCtx.shadowColor = "#ff00ff";
-  snakeCtx.shadowBlur = 10;
-  snakeCtx.fillRect(
-    snakeFood.x * SNAKE_SIZE,
-    snakeFood.y * SNAKE_SIZE,
-    SNAKE_SIZE,
-    SNAKE_SIZE
-  );
-
-  // Snake
-  snakeCtx.fillStyle = "#00ffff";
-  snakeCtx.shadowColor = "#00ffff";
-  snakeCtx.shadowBlur = 12;
-
-  for (let s of snake) {
+    // Food
+    snakeCtx.fillStyle = "#ff00ff";
+    snakeCtx.shadowColor = "#ff00ff";
+    snakeCtx.shadowBlur = 10;
     snakeCtx.fillRect(
-      s.x * SNAKE_SIZE,
-      s.y * SNAKE_SIZE,
-      SNAKE_SIZE,
-      SNAKE_SIZE
+        snakeFood.x * snakeGrid,
+        snakeFood.y * snakeGrid,
+        snakeGrid,
+        snakeGrid
     );
-  }
 
-  // Game over text
-  if (!snakeAlive) {
-    snakeCtx.shadowBlur = 20;
-    snakeCtx.fillStyle = "#ff4444";
-    snakeCtx.font = "24px monospace";
-    snakeCtx.fillText("GAME OVER", 40, 200);
-  }
+    // Snake
+    snakeCtx.fillStyle = "#00ffee";
+    snakeCtx.shadowColor = "#00ffee";
+    snakeCtx.shadowBlur = 12;
+
+    for (let s of snake) {
+        snakeCtx.fillRect(
+            s.x * snakeGrid,
+            s.y * snakeGrid,
+            snakeGrid,
+            snakeGrid
+        );
+    }
+
+    // Game over text
+    if (!snakeAlive) {
+        snakeCtx.shadowBlur = 0;
+        snakeCtx.fillStyle = "#ff0066";
+        snakeCtx.font = "24px sans-serif";
+        snakeCtx.fillText("GAME OVER", 20, 40);
+    }
 }
-
-// Main loop
-let lastSnakeTime = performance.now();
-
-function snakeLoop(timestamp) {
-  const dt = timestamp - lastSnakeTime;
-  lastSnakeTime = timestamp;
-
-  updateSnake(dt);
-  renderSnake();
-
-  requestAnimationFrame(snakeLoop);
-}
-
-// Init
-function initSnake() {
-  snakeCanvas.width = SNAKE_COLS * SNAKE_SIZE;
-  snakeCanvas.height = SNAKE_ROWS * SNAKE_SIZE;
-
-  spawnFood();
-  requestAnimationFrame(snakeLoop);
-}
-
-window.addEventListener("load", initSnake);
