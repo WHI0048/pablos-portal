@@ -1,164 +1,117 @@
-/* ============================================================
-   player.js — Player Controller for Pablo's Portal
-   - WASD movement
-   - Collision with sandbox particles
-   - Fire / lava / poison damage
-   - Explosion knockback
-   - Death + respawn
-============================================================ */
+// =====================================================
+// PLAYER ENGINE — GLOBAL VARIABLES + FUNCTIONS
+// =====================================================
 
-console.log("%c[Player] Loaded player.js", "color:#0ff");
-
-// Player state
-const player = {
-  x: 20,
-  y: 20,
-  vx: 0,
-  vy: 0,
-  speed: 0.15,
-  maxSpeed: 0.6,
-  width: 0.6,
-  height: 0.9,
-  health: 100,
-  alive: true,
-  invincible: false,
-  invTimer: 0
+let player = {
+    x: 50,
+    y: 50,
+    vx: 0,
+    vy: 0,
+    w: 10,
+    h: 14,
+    speed: 1.8,
+    jumpForce: -5,
+    onGround: false,
+    alive: true,
+    respawnX: 50,
+    respawnY: 50,
+    health: 100,
+    maxHealth: 100,
+    invuln: 0
 };
 
-// Movement keys
-const keys = {
-  w: false,
-  a: false,
-  s: false,
-  d: false
-};
+// -----------------------------------------------------
+// Movement input (global booleans set in index.html)
+// -----------------------------------------------------
+let keyLeft = false;
+let keyRight = false;
+let keyUp = false;
 
-document.addEventListener("keydown", e => {
-  if (e.key === "w") keys.w = true;
-  if (e.key === "a") keys.a = true;
-  if (e.key === "s") keys.s = true;
-  if (e.key === "d") keys.d = true;
-});
-
-document.addEventListener("keyup", e => {
-  if (e.key === "w") keys.w = false;
-  if (e.key === "a") keys.a = false;
-  if (e.key === "s") keys.s = false;
-  if (e.key === "d") keys.d = false;
-});
-
-// Damage helpers
+// -----------------------------------------------------
+// Apply damage
+// -----------------------------------------------------
 function damagePlayer(amount) {
-  if (!player.alive || player.invincible) return;
-  player.health -= amount;
-  if (player.health <= 0) killPlayer();
+    if (player.invuln > 0) return;
+    player.health -= amount;
+    player.invuln = 20;
+
+    if (player.health <= 0) {
+        killPlayer();
+    }
 }
 
+// -----------------------------------------------------
+// Kill + respawn
+// -----------------------------------------------------
 function killPlayer() {
-  player.alive = false;
-  player.health = 0;
-  player.invincible = true;
-
-  setTimeout(() => respawnPlayer(), 1200);
+    player.alive = false;
+    setTimeout(() => {
+        player.x = player.respawnX;
+        player.y = player.respawnY;
+        player.vx = 0;
+        player.vy = 0;
+        player.health = player.maxHealth;
+        player.alive = true;
+    }, 500);
 }
 
-function respawnPlayer() {
-  player.x = 10;
-  player.y = 10;
-  player.vx = 0;
-  player.vy = 0;
-  player.health = 100;
-  player.alive = true;
-
-  // brief invincibility
-  player.invTimer = 60;
-  player.invincible = true;
+// -----------------------------------------------------
+// Collision with sandbox
+// -----------------------------------------------------
+function isSolidAt(px, py) {
+    if (!inBounds(Math.floor(px), Math.floor(py))) return false;
+    let p = grid[idx(Math.floor(px), Math.floor(py))];
+    if (!p) return false;
+    return p.state === SOLID;
 }
 
-// Explosion knockback
-document.addEventListener("explosionPulse", e => {
-  const { x, y, power } = e.detail;
-  const dx = player.x - x;
-  const dy = player.y - y;
-  const dist = Math.sqrt(dx * dx + dy * dy);
+function isHazardAt(px, py) {
+    if (!inBounds(Math.floor(px), Math.floor(py))) return false;
+    let p = grid[idx(Math.floor(px), Math.floor(py))];
+    if (!p) return false;
 
-  if (dist < 8) {
-    const force = (8 - dist) * power * 0.04;
-    player.vx += (dx / dist) * force;
-    player.vy += (dy / dist) * force;
-  }
-});
+    // Lava, fire, poison, etc.
+    if (p.temp >= VAPOR_POINT) return true;
+    if (p.type === "lava") return true;
+    if (p.type === "poison") return true;
 
-// Collision with sandbox materials
-function checkPlayerDamage() {
-  const cx = Math.floor(player.x);
-  const cy = Math.floor(player.y);
-
-  const cell = getCell(cx, cy);
-
-  if (cell.fire) damagePlayer(0.6);
-  if (cell.hot) damagePlayer(0.8);
-  if (cell.poison) damagePlayer(0.4);
+    return false;
 }
 
-// Player update loop
-function updatePlayer(dt) {
-  if (!player.alive) return;
+// -----------------------------------------------------
+// Update player physics
+// -----------------------------------------------------
+function updatePlayer() {
+    if (!player.alive) return;
 
-  // Movement input
-  if (keys.w) player.vy -= player.speed * dt;
-  if (keys.s) player.vy += player.speed * dt;
-  if (keys.a) player.vx -= player.speed * dt;
-  if (keys.d) player.vx += player.speed * dt;
+    // Horizontal movement
+    if (keyLeft) player.vx -= player.speed;
+    if (keyRight) player.vx += player.speed;
 
-  // Clamp speed
-  const spd = Math.sqrt(player.vx * player.vx + player.vy * player.vy);
-  if (spd > player.maxSpeed) {
-    player.vx = (player.vx / spd) * player.maxSpeed;
-    player.vy = (player.vy / spd) * player.maxSpeed;
-  }
+    // Gravity
+    player.vy += 0.25;
 
-  // Apply movement
-  player.x += player.vx;
-  player.y += player.vy;
+    // Jump
+    if (keyUp && player.onGround) {
+        player.vy = player.jumpForce;
+        player.onGround = false;
+    }
 
-  // Friction
-  player.vx *= 0.85;
-  player.vy *= 0.85;
+    // Apply velocity
+    let newX = player.x + player.vx;
+    let newY = player.y + player.vy;
 
-  // Boundaries
-  if (player.x < 1) player.x = 1;
-  if (player.y < 1) player.y = 1;
-  if (player.x > GRID_WIDTH - 2) player.x = GRID_WIDTH - 2;
-  if (player.y > GRID_HEIGHT - 2) player.y = GRID_HEIGHT - 2;
+    // Horizontal collision
+    if (!isSolidAt(newX, player.y) && !isSolidAt(newX, player.y + player.h)) {
+        player.x = newX;
+    } else {
+        player.vx = 0;
+    }
 
-  // Damage from environment
-  checkPlayerDamage();
-
-  // Invincibility timer
-  if (player.invTimer > 0) {
-    player.invTimer--;
-    if (player.invTimer <= 0) player.invincible = false;
-  }
-}
-
-// Rendering
-function renderPlayer() {
-  const px = player.x * CELL_SIZE;
-  const py = player.y * CELL_SIZE;
-
-  sandboxCtx.fillStyle = player.invincible ? "#00ffff" : "#ffffff";
-  sandboxCtx.fillRect(px - 3, py - 6, 6, 12);
-}
-
-// Hook into sandbox loop
-document.addEventListener("sandboxFrame", e => {
-  const dt = e.detail.dt;
-  updatePlayer(dt);
-  renderPlayer();
-});
-
-// Reset
-document.addEventListener("sandboxReset", () => {
-  respawnPlayer();
-});
+    // Vertical collision
+    if (!isSolidAt(player.x, newY + player.h)) {
+        player.y = newY;
+        player.onGround = false;
+    } else {
+        // Land on ground
+        player.vy = 0;
