@@ -1,475 +1,670 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Pablo's Portal</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Pablo's Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Existing stylesheet -->
-    <link rel="stylesheet" href="style.css">
+<style>
+/* ---------- Global ---------- */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, pink, #7bb7ff, #ffe066);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    <!-- Neon cyber-glass UI layer -->
-    <style>
-        /* ---------- Global layout ---------- */
-        body {
-            margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top, #1b1f3b 0, #050510 45%, #000000 100%);
-            color: #e9f5ff;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+#app {
+    width: 90%;
+    height: 90%;
+    background: white;
+    border: 2px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
-        .app-shell {
-            width: 95vw;
-            height: 95vh;
-            display: grid;
-            grid-template-rows: auto 1fr;
-            grid-template-columns: 260px 1fr;
-            grid-template-areas:
-                "header header"
-                "sidebar main";
-            gap: 14px;
-            padding: 16px;
-            box-sizing: border-box;
-            position: relative;
-        }
+/* ---------- Panels / buttons ---------- */
+.panel {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 16px;
+}
 
-        /* Subtle background glow */
-        .app-shell::before {
-            content: "";
-            position: fixed;
-            inset: -20%;
-            background:
-                radial-gradient(circle at 10% 0%, rgba(0, 255, 255, 0.18), transparent 55%),
-                radial-gradient(circle at 90% 100%, rgba(255, 0, 200, 0.18), transparent 55%);
-            pointer-events: none;
-            z-index: -1;
-        }
+button {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid #aaa;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+button:hover {
+    background: #f0f0f0;
+}
 
-        /* ---------- Glass primitives ---------- */
-        .glass-panel {
-            background: rgba(10, 14, 40, 0.72);
-            border-radius: 18px;
-            border: 1px solid rgba(120, 200, 255, 0.35);
-            box-shadow:
-                0 0 18px rgba(0, 200, 255, 0.35),
-                0 0 40px rgba(120, 0, 255, 0.25);
-            backdrop-filter: blur(18px) saturate(140%);
-            -webkit-backdrop-filter: blur(18px) saturate(140%);
-        }
+.hidden { display: none; }
 
-        .glass-soft {
-            background: rgba(10, 14, 40, 0.55);
-            border-radius: 16px;
-            border: 1px solid rgba(120, 200, 255, 0.25);
-            box-shadow:
-                0 0 14px rgba(0, 200, 255, 0.25),
-                0 0 26px rgba(120, 0, 255, 0.18);
-            backdrop-filter: blur(14px) saturate(130%);
-            -webkit-backdrop-filter: blur(14px) saturate(130%);
-        }
+/* ---------- Menu ---------- */
+#menuView {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#menuPanel {
+    width: 320px;
+    text-align: center;
+}
 
-        /* ---------- Header ---------- */
-        header.app-header {
-            grid-area: header;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 18px;
-        }
+/* ---------- Sandbox ---------- */
+#sandboxView {
+    flex: 1;
+    display: none;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+}
+#sandboxLeft, #sandboxRight {
+    width: 200px;
+}
+#sandboxCenter {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#world {
+    border: 1px solid #444;
+    image-rendering: pixelated;
+}
 
-        .app-title {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+/* ---------- Snake ---------- */
+#snakeView {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#snakeCanvas {
+    border: 1px solid #444;
+    background: #000;
+}
 
-        .app-title h1 {
-            margin: 0;
-            font-size: 24px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
+/* ---------- Pablo Dash ---------- */
+#dashView {
+    flex: 1;
+    display: none;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+}
+#dashLeft {
+    width: 220px;
+}
+#dashCenter {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#dashCanvas {
+    border: 1px solid #444;
+    background: #111;
+}
 
-        .app-title span {
-            font-size: 11px;
-            opacity: 0.7;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 11px;
-            opacity: 0.8;
-        }
-
-        /* ---------- Sidebar ---------- */
-        aside.app-sidebar {
-            grid-area: sidebar;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .sidebar-section h3 {
-            margin: 0 0 8px 0;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            opacity: 0.8;
-        }
-
-        .sidebar-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .neon-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 9px 14px;
-            border-radius: 999px;
-            border: 1px solid rgba(120, 200, 255, 0.6);
-            background: radial-gradient(circle at 0 0, rgba(0, 255, 255, 0.18), transparent 55%),
-                        rgba(10, 18, 40, 0.9);
-            color: #e9f5ff;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow:
-                0 0 10px rgba(0, 200, 255, 0.6),
-                0 0 22px rgba(120, 0, 255, 0.4);
-            transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
-        }
-
-        .neon-button:hover {
-            transform: translateY(-1px);
-            box-shadow:
-                0 0 14px rgba(0, 255, 255, 0.9),
-                0 0 30px rgba(180, 0, 255, 0.7);
-            border-color: rgba(180, 230, 255, 0.9);
-            background: radial-gradient(circle at 100% 0, rgba(255, 0, 200, 0.25), transparent 55%),
-                        rgba(10, 18, 40, 0.95);
-        }
-
-        .neon-button.secondary {
-            border-color: rgba(150, 170, 220, 0.6);
-            box-shadow:
-                0 0 8px rgba(120, 150, 220, 0.5),
-                0 0 18px rgba(60, 0, 120, 0.4);
-            opacity: 0.9;
-        }
-
-        .neon-button.secondary:hover {
-            opacity: 1;
-        }
-
-        /* ---------- Main content ---------- */
-        main.app-main {
-            grid-area: main;
-            padding: 14px;
-            display: grid;
-            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-            grid-template-rows: minmax(0, 1fr);
-            gap: 14px;
-        }
-
-        .main-left,
-        .main-right {
-            padding: 14px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            opacity: 0.8;
-        }
-
-        .tag-pill {
-            padding: 3px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(120, 200, 255, 0.6);
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            opacity: 0.8;
-        }
-
-        /* ---------- Views ---------- */
-        .view {
-            display: none;
-            flex: 1;
-            min-height: 0;
-        }
-
-        .view.active {
-            display: flex;
-        }
-
-        /* Sandbox layout */
-        #sandboxView {
-            gap: 12px;
-        }
-
-        #sandboxLeft,
-        #sandboxRight {
-            width: 190px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 12px;
-        }
-
-        #sandboxCenter {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-width: 0;
-        }
-
-        canvas {
-            border-radius: 12px;
-            border: 1px solid rgba(120, 200, 255, 0.5);
-            background: radial-gradient(circle at 50% 0, #1a1a2f, #050510 70%);
-            box-shadow:
-                0 0 18px rgba(0, 200, 255, 0.4),
-                0 0 40px rgba(120, 0, 255, 0.35);
-            image-rendering: pixelated;
-        }
-
-        #snakeCanvas {
-            background: radial-gradient(circle at 50% 0, #050510, #000000 70%);
-        }
-
-        /* Credits */
-        #creditsView {
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            gap: 10px;
-        }
-
-        #creditsView h2 {
-            margin: 0 0 4px 0;
-        }
-
-        #creditsView p {
-            margin: 0;
-            opacity: 0.8;
-        }
-
-        /* Small controls */
-        select,
-        input[type="range"] {
-            width: 100%;
-            margin-top: 4px;
-        }
-
-        label {
-            font-size: 11px;
-            opacity: 0.85;
-        }
-
-        /* Responsive tweak */
-        @media (max-width: 900px) {
-            .app-shell {
-                grid-template-columns: 1fr;
-                grid-template-areas:
-                    "header"
-                    "main";
-            }
-            aside.app-sidebar {
-                display: none;
-            }
-            main.app-main {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+/* ---------- Credits ---------- */
+#creditsView {
+    flex: 1;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+</style>
 </head>
 <body>
-<div id="app" class="app-shell glass-panel">
+<div id="app">
 
-    <!-- Header -->
-    <header class="app-header glass-soft">
-        <div class="app-title">
+    <!-- MENU -->
+    <div id="menuView">
+        <div id="menuPanel" class="panel">
             <h1>Pablo's Portal</h1>
-            <span>Neon sandbox • experiments • mini‑games</span>
-        </div>
-        <div class="header-right">
-            <span>v1 · classic portal</span>
-            <a href="https://whi0048.github.io/pablos-portal-2.0/" class="neon-button secondary">
+
+            <button onclick="showSandbox()">Sandbox</button>
+            <br><br>
+            <button onclick="showSnake()">Snake</button>
+            <br><br>
+            <button onclick="showDash()">Pablo Dash</button>
+            <br><br>
+            <button onclick="showCredits()">Credits</button>
+            <br><br>
+
+            <a href="https://whi0048.github.io/pablos-portal-2.0/" class="neon-button">
                 Back to 2.0
             </a>
         </div>
-    </header>
+    </div>
 
-    <!-- Sidebar -->
-    <aside class="app-sidebar glass-soft">
-        <div class="sidebar-section">
-            <h3>Modes</h3>
-            <div class="sidebar-buttons">
-                <button class="neon-button" id="menuSandboxBtn">Sandbox</button>
-                <button class="neon-button" id="menuSnakeBtn">Neon Snake</button>
-                <button class="neon-button secondary" id="menuCreditsBtn">Credits</button>
-            </div>
+    <!-- SANDBOX -->
+    <div id="sandboxView">
+        <div id="sandboxLeft" class="panel">
+            <h3>Tools</h3>
+            <select id="toolSelect">
+                <option value="sand">Sand</option>
+                <option value="water">Water</option>
+                <option value="stone">Stone</option>
+                <option value="fire">Fire</option>
+                <option value="plant">Plant</option>
+                <option value="acid">Acid</option>
+                <option value="wall">Wall</option>
+                <option value="erase">Erase</option>
+            </select>
+
+            <h3>Brush size</h3>
+            <select id="brushSize">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <br><br>
+            <button id="pauseBtn" onclick="togglePause()">Pause</button>
+            <br><br>
+            <button onclick="clearGrid()">Clear</button>
+            <br><br>
+            <button onclick="returnToMenu()">Back</button>
         </div>
 
-        <div class="sidebar-section">
-            <h3>Quick actions</h3>
-            <div class="sidebar-buttons">
-                <button class="neon-button secondary" id="menuBackBtn">Return to Menu</button>
-            </div>
+        <div id="sandboxCenter">
+            <canvas id="world" width="240" height="160"></canvas>
         </div>
-    </aside>
 
-    <!-- Main content -->
-    <main class="app-main">
+        <div id="sandboxRight" class="panel">
+            <h3>Simulation</h3>
+            Gravity<br>
+            <input type="range" id="gravitySlider" min="0" max="2" step="0.1" value="1">
+            <br><br>
+            Wind<br>
+            <input type="range" id="windSlider" min="-1" max="1" step="0.1" value="0">
+        </div>
+    </div>
 
-        <!-- Left: active view -->
-        <section class="main-left glass-soft">
+    <!-- SNAKE -->
+    <div id="snakeView">
+        <h2>Neon Snake</h2>
+        <canvas id="snakeCanvas" width="300" height="300"></canvas>
+        <br>
+        <button onclick="startSnake()">Start</button>
+        <button onclick="returnToMenu()">Back</button>
+    </div>
 
-            <!-- Menu view (simple landing) -->
-            <div id="menuView" class="view active">
-                <div style="margin:auto; text-align:center; max-width:320px;">
-                    <div class="panel-header">
-                        <span>Welcome</span>
-                        <span class="tag-pill">Portal hub</span>
-                    </div>
-                    <p style="font-size:13px; opacity:0.85; margin-top:10px;">
-                        Choose a mode from the sidebar to start playing with
-                        particles, physics, or classic mini‑games.
-                    </p>
-                    <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;">
-                        <button class="neon-button" id="menuPrimarySandbox">Launch Sandbox</button>
-                        <button class="neon-button secondary" id="menuPrimarySnake">Launch Neon Snake</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sandbox view -->
-            <div id="sandboxView" class="view">
-                <div id="sandboxLeft">
-                    <div class="panel-header">
-                        <span>Tools</span>
-                        <span class="tag-pill">Sandbox</span>
-                    </div>
-
-                    <label for="toolSelect">Element</label>
-                    <select id="toolSelect">
-                        <option value="sand">Sand</option>
-                        <option value="water">Water</option>
-                        <option value="stone">Stone</option>
-                        <option value="fire">Fire</option>
-                        <option value="plant">Plant</option>
-                        <option value="acid">Acid</option>
-                        <option value="wall">Wall</option>
-                        <option value="erase">Erase</option>
-                    </select>
-
-                    <label for="brushSize">Brush size</label>
-                    <select id="brushSize">
-                        <option value="1">1</option>
-                        <option value="2" selected>2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
-
-                    <button class="neon-button secondary" id="pauseBtn">Pause</button>
-                    <button class="neon-button secondary" id="clearBtn">Clear</button>
-                    <button class="neon-button secondary" id="sandboxBackBtn">Back to Menu</button>
-                </div>
-
-                <div id="sandboxCenter">
-                    <canvas id="world" width="240" height="160"></canvas>
-                </div>
-
-                <div id="sandboxRight">
-                    <div class="panel-header">
-                        <span>Simulation</span>
-                        <span class="tag-pill">Physics</span>
-                    </div>
-
-                    <label for="gravitySlider">Gravity</label>
-                    <input type="range" id="gravitySlider" min="0" max="2" step="0.1" value="1">
-
-                    <label for="windSlider">Wind</label>
-                    <input type="range" id="windSlider" min="-1" max="1" step="0.1" value="0">
-                </div>
-            </div>
-
-            <!-- Snake view -->
-            <div id="snakeView" class="view">
-                <div style="margin:auto; display:flex; flex-direction:column; align-items:center; gap:10px;">
-                    <div class="panel-header" style="width:100%;">
-                        <span>Neon Snake</span>
-                        <span class="tag-pill">Arcade</span>
-                    </div>
-                    <canvas id="snakeCanvas" width="300" height="300"></canvas>
-                    <div style="display:flex; gap:8px; margin-top:6px;">
-                        <button class="neon-button" id="snakeStartBtn">Start</button>
-                        <button class="neon-button secondary" id="snakeBackBtn">Back to Menu</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Credits view -->
-            <div id="creditsView" class="view">
-                <div style="margin:auto; text-align:center;">
-                    <h2>Credits</h2>
-                    <p>Created by Rebecca.</p>
-                    <button class="neon-button secondary" id="creditsBackBtn">Back to Menu</button>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- Right: optional info / future panels -->
-        <section class="main-right glass-soft">
-            <div class="panel-header">
-                <span>Now playing</span>
-                <span class="tag-pill" id="statusTag">Menu</span>
-            </div>
-            <p id="statusText" style="font-size:13px; opacity:0.85; margin-top:8px;">
-                Select a mode to begin. Sandbox lets you play with particles and physics;
-                Neon Snake gives you a classic arcade loop with a glowing twist.
+    <!-- PABLO DASH + LEVEL EDITOR -->
+    <div id="dashView">
+        <div id="dashLeft" class="panel">
+            <h3>Pablo Dash Editor</h3>
+            <p style="font-size:12px;">
+                Left/Right arrows: scroll<br>
+                Click: toggle block<br>
+                Right‑click: set spawn line<br>
+                Space: jump (playtest)
             </p>
-        </section>
+            <button onclick="dashEnterEdit()">Editor mode</button>
+            <br><br>
+            <button onclick="dashPlaytest()">Playtest</button>
+            <br><br>
+            <button onclick="returnToMenu()">Back</button>
+        </div>
+        <div id="dashCenter">
+            <canvas id="dashCanvas" width="640" height="360"></canvas>
+        </div>
+    </div>
 
-    </main>
+    <!-- CREDITS -->
+    <div id="creditsView" class="panel">
+        <div style="text-align:center;">
+            <h2>Credits</h2>
+            <p>Created by Rebecca.</p>
+            <button onclick="returnToMenu()">Back</button>
+        </div>
+    </div>
+
 </div>
 
-<!-- Existing JS modules (logic unchanged) -->
-<script src="ui.js"></script>
-<script src="sandbox.js"></script>
-<script src="snake.js"></script>
-<script src="explosions.js"></script>
-<script src="laser.js"></script>
-<script src="lighter.js"></script>
-<script src="player.js"></script>
-<script src="script.js"></script>
+<script>
+/* ---------- View switching ---------- */
+function hideAll() {
+    document.getElementById("menuView").style.display = "none";
+    document.getElementById("sandboxView").style.display = "none";
+    document.getElementById("snakeView").style.display = "none";
+    document.getElementById("dashView").style.display = "none";
+    document.getElementById("creditsView").style.display = "none";
+}
+function returnToMenu() {
+    hideAll();
+    document.getElementById("menuView").style.display = "flex";
+}
+function showSandbox() {
+    hideAll();
+    document.getElementById("sandboxView").style.display = "flex";
+}
+function showSnake() {
+    hideAll();
+    document.getElementById("snakeView").style.display = "flex";
+}
+function showDash() {
+    hideAll();
+    document.getElementById("dashView").style.display = "flex";
+}
+function showCredits() {
+    hideAll();
+    document.getElementById("creditsView").style.display = "flex";
+}
 
+/* ---------- Sandbox (simple) ---------- */
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+let paused = false;
+const EMPTY=0,SAND=1,WATER=2,STONE=3,FIRE=4,PLANT=5,ACID=6,WALL=7;
+const grid = new Array(W*H).fill(EMPTY);
+const nextGrid = new Array(W*H).fill(EMPTY);
+
+function idx(x,y){return y*W+x;}
+function inBounds(x,y){return x>=0&&x<W&&y>=0&&y<H;}
+function getCell(x,y){return inBounds(x,y)?grid[idx(x,y)]:WALL;}
+function setCell(x,y,t){if(inBounds(x,y))grid[idx(x,y)]=t;}
+function clearGrid(){grid.fill(EMPTY);}
+function togglePause(){
+    paused=!paused;
+    document.getElementById("pauseBtn").textContent=paused?"Resume":"Pause";
+}
+
+function updateSandbox(){
+    nextGrid.set(grid);
+    for(let y=H-1;y>=0;y--){
+        for(let x=0;x<W;x++){
+            const i=idx(x,y), cell=grid[i];
+            if(cell===EMPTY||cell===STONE||cell===WALL)continue;
+
+            if(cell===SAND){
+                const below=getCell(x,y+1);
+                if(below===EMPTY||below===WATER){
+                    nextGrid[idx(x,y+1)]=SAND;
+                    nextGrid[i]=below===WATER?WATER:EMPTY;
+                    continue;
+                }
+                const dir=Math.random()<0.5?-1:1;
+                if(getCell(x+dir,y+1)===EMPTY){
+                    nextGrid[idx(x+dir,y+1)]=SAND;
+                    nextGrid[i]=EMPTY;
+                    continue;
+                }
+            }
+
+            if(cell===WATER){
+                const below=getCell(x,y+1);
+                if(below===EMPTY){
+                    nextGrid[idx(x,y+1)]=WATER;
+                    nextGrid[i]=EMPTY;
+                    continue;
+                }
+                const dir=Math.random()<0.5?-1:1;
+                if(getCell(x+dir,y)===EMPTY){
+                    nextGrid[idx(x+dir,y)]=WATER;
+                    nextGrid[i]=EMPTY;
+                    continue;
+                }
+            }
+
+            if(cell===FIRE){
+                if(Math.random()<0.05){nextGrid[i]=EMPTY;continue;}
+                const n=[[1,0],[-1,0],[0,1],[0,-1]];
+                for(const[dX,dY]of n){
+                    if(getCell(x+dX,y+dY)===PLANT)
+                        nextGrid[idx(x+dX,y+dY)]=FIRE;
+                }
+            }
+
+            if(cell===PLANT){
+                if(Math.random()<0.01){
+                    const dir=Math.random()<0.5?-1:1;
+                    if(getCell(x+dir,y-1)===EMPTY)
+                        nextGrid[idx(x+dir,y-1)]=PLANT;
+                }
+            }
+
+            if(cell===ACID){
+                const dirs=[[0,1],[1,0],[-1,0],[0,-1]];
+                for(const[dX,dY]of dirs){
+                    const c=getCell(x+dX,y+dY);
+                    if(c!==EMPTY&&c!==ACID){
+                        nextGrid[idx(x+dX,y+dY)]=EMPTY;
+                        if(Math.random()<0.3)nextGrid[i]=EMPTY;
+                    }
+                }
+                if(getCell(x,y+1)===EMPTY){
+                    nextGrid[idx(x,y+1)]=ACID;
+                    nextGrid[i]=EMPTY;
+                }
+            }
+        }
+    }
+    grid.set(nextGrid);
+}
+
+function drawSandbox(){
+    const img=ctx.createImageData(W,H);
+    const d=img.data;
+    for(let y=0;y<H;y++){
+        for(let x=0;x<W;x++){
+            const i=idx(x,y), cell=grid[i], p=i*4;
+            let r=0,g=0,b=0;
+            if(cell===SAND){r=194;g=178;b=128;}
+            if(cell===WATER){r=64;g=96;b=255;}
+            if(cell===STONE){r=120;g=120;b=120;}
+            if(cell===FIRE){r=255;g=120;b=40;}
+            if(cell===PLANT){r=40;g=200;b=60;}
+            if(cell===ACID){r=120;g=255;b=120;}
+            if(cell===WALL){r=180;g=180;b=180;}
+            d[p]=r;d[p+1]=g;d[p+2]=b;d[p+3]=255;
+        }
+    }
+    ctx.putImageData(img,0,0);
+}
+
+let mouseDown=false,rightDown=false;
+canvas.addEventListener("mousedown",e=>{
+    if(e.button===0)mouseDown=true;
+    if(e.button===2)rightDown=true;
+    paintSandbox(e);
+});
+canvas.addEventListener("mouseup",()=>{mouseDown=false;rightDown=false;});
+canvas.addEventListener("mouseleave",()=>{mouseDown=false;rightDown=false;});
+canvas.addEventListener("contextmenu",e=>e.preventDefault());
+canvas.addEventListener("mousemove",e=>{
+    if(mouseDown||rightDown)paintSandbox(e);
+});
+
+function paintSandbox(e){
+    const rect=canvas.getBoundingClientRect();
+    const x=Math.floor((e.clientX-rect.left)*W/rect.width);
+    const y=Math.floor((e.clientY-rect.top)*H/rect.height);
+    const size=parseInt(document.getElementById("brushSize").value);
+    const tool=document.getElementById("toolSelect").value;
+    for(let dy=-size;dy<=size;dy++){
+        for(let dx=-size;dx<=size;dx++){
+            const nx=x+dx,ny=y+dy;
+            if(!inBounds(nx,ny))continue;
+            if(rightDown||tool==="erase"){
+                setCell(nx,ny,EMPTY);
+            }else{
+                const map={sand:SAND,water:WATER,stone:STONE,fire:FIRE,plant:PLANT,acid:ACID,wall:WALL};
+                setCell(nx,ny,map[tool]);
+            }
+        }
+    }
+}
+
+/* ---------- Snake ---------- */
+const snakeCanvas=document.getElementById("snakeCanvas");
+const sctx=snakeCanvas.getContext("2d");
+let snake=[],food={x:0,y:0},dx=10,dy=0,snakeInterval=null;
+
+function startSnake(){
+    snake=[{x:150,y:150}];
+    dx=10;dy=0;
+    placeFood();
+    if(snakeInterval)clearInterval(snakeInterval);
+    snakeInterval=setInterval(updateSnake,100);
+}
+function placeFood(){
+    food.x=Math.floor(Math.random()*30)*10;
+    food.y=Math.floor(Math.random()*30)*10;
+}
+function updateSnake(){
+    const head={x:snake[0].x+dx,y:snake[0].y+dy};
+    if(head.x<0||head.x>=300||head.y<0||head.y>=300){
+        startSnake();return;
+    }
+    snake.unshift(head);
+    if(head.x===food.x&&head.y===food.y)placeFood();
+    else snake.pop();
+    drawSnake();
+}
+function drawSnake(){
+    sctx.fillStyle="black";
+    sctx.fillRect(0,0,300,300);
+    sctx.fillStyle="lime";
+    snake.forEach(p=>sctx.fillRect(p.x,p.y,10,10));
+    sctx.fillStyle="red";
+    sctx.fillRect(food.x,food.y,10,10);
+}
+document.addEventListener("keydown",e=>{
+    if(e.key==="ArrowUp"&&dy===0){dx=0;dy=-10;}
+    if(e.key==="ArrowDown"&&dy===0){dx=0;dy=10;}
+    if(e.key==="ArrowLeft"&&dx===0){dx=-10;dy=0;}
+    if(e.key==="ArrowRight"&&dx===0){dx=10;dy=0;}
+});
+
+/* ---------- Pablo Dash + Level Editor ---------- */
+const dashCanvas=document.getElementById("dashCanvas");
+const dctx=dashCanvas.getContext("2d");
+const TILE=20;
+const WORLD_HEIGHT=18; // tiles
+let dashMode="edit";   // "edit" or "play"
+let cameraX=0;
+const barrierX=0;      // fixed red barrier
+let spawnX=100;        // world x for spawn line
+let blocks=[];         // {x,y} in tile coords
+let player=null;
+
+function dashEnterEdit(){
+    dashMode="edit";
+    player=null;
+}
+function dashPlaytest(){
+    dashMode="play";
+    player={
+        x:spawnX,
+        y:(WORLD_HEIGHT-3)*TILE,
+        vx:0,
+        vy:0,
+        onGround:false
+    };
+}
+
+function worldToScreenX(wx){return wx-cameraX;}
+function screenToWorldX(sx){return sx+cameraX;}
+
+function toggleBlockAt(wx,wy){
+    const tx=Math.floor(wx/TILE);
+    const ty=Math.floor(wy/TILE);
+    if(ty<0||ty>=WORLD_HEIGHT)return;
+    const idx=blocks.findIndex(b=>b.x===tx&&b.y===ty);
+    if(idx>=0)blocks.splice(idx,1);
+    else blocks.push({x:tx,y:ty});
+}
+
+dashCanvas.addEventListener("mousedown",e=>{
+    const rect=dashCanvas.getBoundingClientRect();
+    const sx=e.clientX-rect.left;
+    const sy=e.clientY-rect.top;
+    const wx=screenToWorldX(sx);
+    const wy=sy;
+    if(dashMode!=="edit")return;
+
+    if(e.button===2){
+        // set spawn line (clamped to right of barrier)
+        const minSpawn=barrierX+TILE;
+        spawnX=Math.max(minSpawn,Math.floor(wx/TILE)*TILE+TILE/2);
+    }else if(e.button===0){
+        toggleBlockAt(wx,wy);
+    }
+});
+dashCanvas.addEventListener("contextmenu",e=>e.preventDefault());
+
+document.addEventListener("keydown",e=>{
+    // camera scroll
+    if(e.key==="ArrowRight"){
+        cameraX+=20;
+    }
+    if(e.key==="ArrowLeft"){
+        cameraX-=20;
+        if(cameraX<barrierX)cameraX=barrierX;
+    }
+
+    if(dashMode==="play"&&player){
+        if(e.key==="ArrowLeft")player.vx=-3;
+        if(e.key==="ArrowRight")player.vx=3;
+        if((e.key===" "||e.key==="ArrowUp")&&player.onGround){
+            player.vy=-8;
+            player.onGround=false;
+        }
+    }
+});
+
+function updateDash(){
+    if(dashMode==="play"&&player){
+        // gravity
+        player.vy+=0.4;
+        player.x+=player.vx;
+        player.y+=player.vy;
+
+        // simple friction
+        player.vx*=0.9;
+
+        // floor
+        const floorY=(WORLD_HEIGHT-1)*TILE;
+        if(player.y>floorY-18){
+            player.y=floorY-18;
+            player.vy=0;
+            player.onGround=true;
+        }
+
+        // block collisions (AABB vs tiles)
+        const px=player.x, py=player.y;
+        const w=16,h=18;
+        const minTx=Math.floor((px-w/2)/TILE)-1;
+        const maxTx=Math.floor((px+w/2)/TILE)+1;
+        const minTy=Math.floor((py-h/2)/TILE)-1;
+        const maxTy=Math.floor((py+h/2)/TILE)+1;
+
+        for(const b of blocks){
+            if(b.x<minTx||b.x>maxTx||b.y<minTy||b.y>maxTy)continue;
+            const bx=b.x*TILE, by=b.y*TILE, bw=TILE,bh=TILE;
+            // simple vertical resolution
+            if(px+w/2>bx && px-w/2<bx+bw && py+h/2>by && py-h/2<by+bh){
+                // coming from above
+                if(player.vy>0 && py<by){
+                    player.y=by-h/2;
+                    player.vy=0;
+                    player.onGround=true;
+                }
+            }
+        }
+
+        // camera follows player, but never left of barrier
+        cameraX=player.x-dashCanvas.width/3;
+        if(cameraX<barrierX)cameraX=barrierX;
+    }
+}
+
+function drawDash(){
+    dctx.fillStyle="#111";
+    dctx.fillRect(0,0,dashCanvas.width,dashCanvas.height);
+
+    // grid
+    dctx.strokeStyle="#222";
+    dctx.lineWidth=1;
+    for(let x=-cameraX%TILE;x<dashCanvas.width;x+=TILE){
+        dctx.beginPath();
+        dctx.moveTo(x,0);
+        dctx.lineTo(x,dashCanvas.height);
+        dctx.stroke();
+    }
+    for(let y=0;y<dashCanvas.height;y+=TILE){
+        dctx.beginPath();
+        dctx.moveTo(0,y);
+        dctx.lineTo(dashCanvas.width,y);
+        dctx.stroke();
+    }
+
+    // barrier line (red, fixed world x = barrierX)
+    const barrierScreenX=worldToScreenX(barrierX);
+    if(barrierScreenX>=0 && barrierScreenX<=dashCanvas.width){
+        dctx.strokeStyle="red";
+        dctx.lineWidth=2;
+        dctx.beginPath();
+        dctx.moveTo(barrierScreenX,0);
+        dctx.lineTo(barrierScreenX,dashCanvas.height);
+        dctx.stroke();
+        dctx.fillStyle="red";
+        dctx.font="10px Arial";
+        dctx.fillText("Barrier", barrierScreenX+4,12);
+    }
+
+    // spawn line (white)
+    const spawnScreenX=worldToScreenX(spawnX);
+    if(spawnScreenX>=0 && spawnScreenX<=dashCanvas.width){
+        dctx.strokeStyle="white";
+        dctx.lineWidth=2;
+        dctx.beginPath();
+        dctx.moveTo(spawnScreenX,0);
+        dctx.lineTo(spawnScreenX,dashCanvas.height);
+        dctx.stroke();
+        dctx.fillStyle="white";
+        dctx.font="10px Arial";
+        dctx.fillText("Spawn", spawnScreenX+4,24);
+    }
+
+    // blocks
+    dctx.fillStyle="#4af";
+    for(const b of blocks){
+        const sx=worldToScreenX(b.x*TILE);
+        const sy=b.y*TILE;
+        if(sx+TILE<0||sx>dashCanvas.width)continue;
+        dctx.fillRect(sx,sy,TILE,TILE);
+    }
+
+    // ground line
+    dctx.strokeStyle="#333";
+    dctx.lineWidth=2;
+    const groundY=(WORLD_HEIGHT-1)*TILE;
+    dctx.beginPath();
+    dctx.moveTo(0,groundY);
+    dctx.lineTo(dashCanvas.width,groundY);
+    dctx.stroke();
+
+    // player
+    if(player){
+        const sx=worldToScreenX(player.x);
+        const sy=player.y;
+        dctx.fillStyle="#0f0";
+        dctx.fillRect(sx-8,sy-18,16,18);
+    }
+
+    // mode label
+    dctx.fillStyle="#fff";
+    dctx.font="12px Arial";
+    dctx.fillText("Mode: "+dashMode,10,16);
+}
+
+/* ---------- Main loop ---------- */
+function mainLoop(){
+    if(!paused)updateSandbox();
+    drawSandbox();
+    updateDash();
+    drawDash();
+    requestAnimationFrame(mainLoop);
+}
+mainLoop();
+</script>
 </body>
 </html>
