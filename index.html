@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ---------- Global layout (2.0-style app) ---------- */
 * { box-sizing: border-box; }
 
 body {
@@ -608,7 +607,7 @@ const TILE=20;
 const WORLD_HEIGHT=18;
 const barrierX=0;
 let cameraX=0;
-let spawnX=100;
+let spawnX=80;
 let dashMode="edit"; // "edit" or "play"
 let dashTool=document.getElementById('dashTool').value;
 let dashBlocks=[]; // {x,y,type}
@@ -626,11 +625,11 @@ const TYPE_GOAL="goal";
 
 document.getElementById('dashTool').onchange = e => dashTool=e.target.value;
 document.getElementById('dashScrollLeftBtn').onclick = () => {
-    cameraX -= 40;
+    cameraX -= TILE;
     if(cameraX<barrierX)cameraX=barrierX;
 };
 document.getElementById('dashScrollRightBtn').onclick = () => {
-    cameraX += 40;
+    cameraX += TILE;
 };
 document.getElementById('dashEditBtn').onclick = () => {
     dashMode="edit";
@@ -689,9 +688,9 @@ dashCanvas.addEventListener("contextmenu",e=>e.preventDefault());
 document.addEventListener("keydown",e=>{
     if(document.getElementById('dashView').classList.contains('active')){
         if(dashMode==="edit"){
-            if(e.key==="ArrowRight")cameraX+=40;
+            if(e.key==="ArrowRight")cameraX+=TILE;
             if(e.key==="ArrowLeft"){
-                cameraX-=40;
+                cameraX-=TILE;
                 if(cameraX<barrierX)cameraX=barrierX;
             }
         }else if(dashMode==="play"&&dashPlayer){
@@ -769,6 +768,7 @@ function drawDash(){
     dctx.fillStyle="#111";
     dctx.fillRect(0,0,dashCanvas.width,dashCanvas.height);
 
+    /* grid */
     dctx.strokeStyle="#222";
     dctx.lineWidth=1;
     for(let x=-cameraX%TILE;x<dashCanvas.width;x+=TILE){
@@ -784,6 +784,7 @@ function drawDash(){
         dctx.stroke();
     }
 
+    /* barrier line */
     const barrierScreenX=worldToScreenX(barrierX);
     if(barrierScreenX>=0 && barrierScreenX<=dashCanvas.width){
         dctx.strokeStyle="red";
@@ -797,6 +798,7 @@ function drawDash(){
         dctx.fillText("Barrier", barrierScreenX+4,12);
     }
 
+    /* spawn line */
     const spawnScreenX=worldToScreenX(spawnX);
     if(spawnScreenX>=0 && spawnScreenX<=dashCanvas.width){
         dctx.strokeStyle="white";
@@ -810,6 +812,7 @@ function drawDash(){
         dctx.fillText("Spawn", spawnScreenX+4,24);
     }
 
+    /* blocks */
     for(const b of dashBlocks){
         const sx=worldToScreenX(b.x*TILE);
         const sy=b.y*TILE;
@@ -854,6 +857,7 @@ function drawDash(){
         }
     }
 
+    /* ground */
     dctx.strokeStyle="#333";
     dctx.lineWidth=2;
     const groundY=(WORLD_HEIGHT-1)*TILE;
@@ -862,6 +866,7 @@ function drawDash(){
     dctx.lineTo(dashCanvas.width,groundY);
     dctx.stroke();
 
+    /* player */
     if(dashPlayer){
         const sx=worldToScreenX(dashPlayer.x);
         const sy=dashPlayer.y;
